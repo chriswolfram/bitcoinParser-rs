@@ -1,0 +1,739 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"incomeMap",
+				"incomeMap4LowRes"
+			],
+			[
+				"Valida",
+				"ValidationSet"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "src/main.rs",
+			"settings":
+			{
+				"buffer_size": 59,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					1,
+					1,
+					"insert",
+					{
+						"characters": "\n\n"
+					},
+					"AgAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAACAAAAAAAAAAAAAAA",
+					"AQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/"
+				],
+				[
+					3,
+					1,
+					"insert",
+					{
+						"characters": "use"
+					},
+					"AwAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAACAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAAAAAAAAAAA",
+					"AQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+				],
+				[
+					4,
+					1,
+					"insert",
+					{
+						"characters": " std::fs"
+					},
+					"CAAAAAMAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAFAAAAAAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAAAAAAAAYAAAAAAAAABwAAAAAAAAAAAAAABwAAAAAAAAAIAAAAAAAAAAAAAAAIAAAAAAAAAAkAAAAAAAAAAAAAAAkAAAAAAAAACgAAAAAAAAAAAAAACgAAAAAAAAALAAAAAAAAAAAAAAA",
+					"AQAAAAAAAAABAAAAAwAAAAAAAAADAAAAAAAAAAAAAAAAAPC/"
+				],
+				[
+					5,
+					1,
+					"insert",
+					{
+						"characters": ";"
+					},
+					"AQAAAAsAAAAAAAAADAAAAAAAAAAAAAAA",
+					"AQAAAAAAAAABAAAACwAAAAAAAAALAAAAAAAAAAAAAAAAAPC/"
+				]
+			]
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"saveall",
+				"File: Save All"
+			],
+			[
+				"close all",
+				"File: Close All"
+			],
+			[
+				"save all",
+				"File: Save All"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"package control: remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: list",
+				"Package Control: List Packages"
+			],
+			[
+				"package",
+				"Preferences: Browse Packages"
+			],
+			[
+				"package install",
+				"Package Control: Install Package"
+			],
+			[
+				"key",
+				"Preferences: LSP Key Bindings"
+			],
+			[
+				"package ",
+				"View Package File"
+			],
+			[
+				"view pack",
+				"View Package File"
+			],
+			[
+				"package control sat",
+				"Package Control: Satisfy Dependencies"
+			],
+			[
+				"remove pa",
+				"Package Control: Remove Package"
+			],
+			[
+				"settings",
+				"Preferences: Settings – Syntax Specific"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"syntax wol",
+				"Set Syntax: Wolfram"
+			],
+			[
+				"lsp",
+				"LSP: Troubleshoot Server"
+			],
+			[
+				"package f",
+				"View Package File"
+			],
+			[
+				"lsp sett",
+				"Preferences: LSP Settings"
+			],
+			[
+				"package remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"wolf",
+				"Wolfram Language: Settings"
+			],
+			[
+				"wolfram ",
+				"Wolfram Language: Settings"
+			],
+			[
+				"install p",
+				"Package Control: Install Package"
+			],
+			[
+				"syntax specific",
+				"Preferences: Settings – Syntax Specific"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 368.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/christopher/git/bitcoinParser-rs",
+		"/Users/christopher/git/bitcoinParser-rs/src"
+	],
+	"file_history":
+	[
+		"/Users/christopher/git/bitcoinParser-rs/bitcoin_parser/src/main.rs",
+		"/Users/christopher/git/chriswolfram.github.io/content/projects/ukraine-nightlights/index.html",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/OptionalArgument.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Expression/Utilities/BuildExpression.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Utilities/CompiledExpression.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/LibC.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Compiler/AssociationReference.m",
+		"/Users/christopher/git/compiler/compile/Compile/Core/IR/Lower/Primitives/TypeSpecifier.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/DataStructures/Value.m",
+		"/Users/christopher/git/compilerlanguage/BuildLibraries.nb",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Handle.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Expression/ExpressionBased/AtomExpression.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Expression/Expression.m",
+		"/Users/christopher/git/compiler/compile/Compile/Core/CodeGeneration/Backend/LLVM/LLVM.m",
+		"/Users/christopher/git/compiler/typeframework/TypeFramework/Utilities/CompiledExpression.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Iterators/Loop/DenseArrayIterator.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/TypeSum/Either.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Null.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Types.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Missing.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Expression/ExpressionBased/Base.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Information.m",
+		"/Users/christopher/git/compiler/compileast/CompileAST/Export/Format/Information/Information.m",
+		"/Users/christopher/git/compiler/typeframework/TypeFramework/Language/DesugarType.m",
+		"/Users/christopher/git/compiler/compile/Compile/Utilities/Logging/CompileProgressLogger.m",
+		"/Users/christopher/git/compiler/compile/Compile/Driver.m",
+		"/Users/christopher/git/compiler/compile/Compile/Core/IR/Lower/Primitives/TypeArgument.m",
+		"/Users/christopher/git/compiler/compile/Compile/Core/IR/Lower/Primitives/Primitives.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Casts/SafeCast.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Casts/ReinterpretCast.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Casts/Cast.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/Casts/BitCast.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/TypeSum.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/TypeSpecifier.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/SizeOf.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/RectangularArray/DenseArray/NumericArray.m",
+		"/Users/christopher/git/compiler/typeframework/TypeFramework/TypeObjects/TypeForAll.m",
+		"/Users/christopher/git/compiler/typeframework/TypeFramework/TypeObjects/TypeQualified.m",
+		"/System/Volumes/Data/Users/christopher/Documents/wolframEngineBrew/Wolfram Engine.app/Contents/Resources/Wolfram Player.app/Contents/SystemFiles/Links/LibraryLink/LibraryResources/Source/demo.c",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/AroundLibrary/Base.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/String/Base.m",
+		"/Users/christopher/git/compiler/compile/Compile/Core/IR/Lower/Primitives/StackAllocate.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/SpecificTypes/CString.m",
+		"/Users/christopher/git/compiler/compiledcompiler/CompiledCompiler/IR/BasicBlock.m",
+		"/Users/christopher/git/compiler/compiledcompiler/CompiledCompiler/IR/FunctionModule.m",
+		"/Users/christopher/git/compiler/compiledcompiler/CompiledCompiler/IR/Instructions.m",
+		"/Users/christopher/git/compiler/compiledcompiler/CompiledCompiler/IR/Values.m",
+		"/Users/christopher/git/compiler/compiledcompiler/CompiledCompiler/UtilityTypes/MaybeNone.m",
+		"/Users/christopher/git/compiler/compiledcompiler/Tests/Core/IR/Instructions/Instruction.mt",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Statistics/Random.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Functional/Closures.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Misc.m",
+		"/Users/christopher/git/compiler/compile/Compile/PacletInfo.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/BitVector/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/BloomFilter/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/ByteTrie/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/Deque/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/DoublyLinkedList/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/DynamicArray/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/ExtensibleVector/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/FixedArray/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/ImmutableVector/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/KDTree/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/LinkedList/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/LRUCache/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/Queue/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/RingBuffer/Program.m",
+		"/Users/christopher/git/compiler/datastructure/DataStructure/Source/Stack/Program.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/Dissimilarities/BooleanDissimilarities.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/Dissimilarities/DistanceFunctions.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/LSQR/LSQR.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/SparseArray/SparseLibrary/SparseLibrary.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/SparseArray/TypeSystem/CSRData.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/SparseArray/TypeSystem/ExpressionBoxing.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/SparseArray/TypeSystem/FullFormData.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/SparseArray/TypeSystem/KSparseArray.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/SparseArray/TypeSystem/Properties.m",
+		"/Users/christopher/git/compiler/numericalcompiledcomponents/NumericalCompiledComponents/SparseArray/TypeSystem/Arithmetic/Times.m",
+		"/Users/christopher/git/compiler/typeframework/TypeFramework/Environments/TypeInitialization.m",
+		"/Users/christopher/git/compiler/compile/Compile/AST/Macro/Builtin/Message.m",
+		"/Users/christopher/git/compiler/compile/Compile/AST/Macro/Builtin/Table.m",
+		"/Users/christopher/git/compiler/compile/Compile/AST/Macro/Builtin/Timing.m",
+		"/Users/christopher/git/compiler/compile/Compile/AST/Macro/Builtin/Typed.m",
+		"/Users/christopher/git/compiler/compile/Compile/Core/IR/Lower/TypePrediction/TypePrediction.m",
+		"/Users/christopher/git/compiler/compile/Compile/Core/Optimization/CoerceCast.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/ClassCompile/ClassCompile.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Compiler/AssociationIntegerReference.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Compiler/ClassSystem.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Environment/CPUInformation.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Environment/Time.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Functional/Select.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Iterators/Loop/LegacyNumberIterator.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/ArcTan.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/DecrementBy.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Divide.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/IncrementBy.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/IntegerExponent.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/IntegerLength.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Log.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/MinMax.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Mod.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/MultiplyBy.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Plus.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Power.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Quotient.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/QuotientRemainder.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Subtract.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Times.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/UnitBox.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/Unitize.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/UnitStep.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Binary/UnitTriangle.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/BitOperations/BitAnd.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/BitOperations/BitOr.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/BitOperations/BitXor.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Comparison/Equal.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/GCDLCM/BinaryEuclidGCD.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/GCDLCM/BinaryGCD.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/GCDLCM/EuclidGCD.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/GCDLCM/GCD.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/GCDLCM/LCM.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Modular/Divisible.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Ternary/Mod.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Arithmetic/Ternary/Quotient.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Numeric/Types/Complexes.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Parallel/ParallelTable.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/Parallel/Iterator/Numbers.m",
+		"/Users/christopher/git/compiler/compile/Compile/TypeSystem/Declarations/RectangularArray/DenseArray/PackedArray.m"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 98.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/main.rs",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 59,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								59,
+								59
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".:",
+									"selector": "source.rust"
+								},
+								{
+									"characters": ":.'",
+									"selector": "meta.tag, source - comment - string.quoted.double.block - string.quoted.single.block - string.unquoted.heredoc",
+									"server": "rust-analyzer"
+								}
+							],
+							"lsp_active": true,
+							"lsp_hover_provider_count": 1,
+							"lsp_uri": "file:///Users/christopher/git/bitcoinParser-rs/src/main.rs",
+							"show_definitions": false,
+							"syntax": "Packages/Rust Enhanced/RustEnhanced.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.diagnostics":
+	{
+		"height": 215.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.language servers":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups-dummy":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "bitcoin_parser.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"value",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/DataStructures/Value.m"
+			],
+			[
+				"constantexpres",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Expression/ExpressionBased/AtomExpression.m"
+			],
+			[
+				"buildexpre",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Expression/Utilities/BuildExpression.m"
+			],
+			[
+				"compiledexpression",
+				"typeframework/TypeFramework/Utilities/CompiledExpression.m"
+			],
+			[
+				"null",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Null.m"
+			],
+			[
+				"compiledexpre",
+				"compile/Compile/TypeSystem/Declarations/Utilities/CompiledExpression.m"
+			],
+			[
+				"missing",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Missing.m"
+			],
+			[
+				"information",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Information.m"
+			],
+			[
+				"typespecifier",
+				"compile/Compile/Core/IR/Lower/Primitives/TypeSpecifier.m"
+			],
+			[
+				"typeargument",
+				"compile/Compile/Core/IR/Lower/Primitives/TypeArgument.m"
+			],
+			[
+				"typequal",
+				"typeframework/TypeFramework/TypeObjects/TypeQualified.m"
+			],
+			[
+				"typeforall",
+				"typeframework/TypeFramework/TypeObjects/TypeForAll.m"
+			],
+			[
+				"desugartype",
+				"typeframework/TypeFramework/Language/DesugarType.m"
+			],
+			[
+				"expressionbased base",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Expression/ExpressionBased/Base.m"
+			],
+			[
+				"around base",
+				"numericalcompiledcomponents/NumericalCompiledComponents/AroundLibrary/Base.m"
+			],
+			[
+				"string base",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/String/Base.m"
+			],
+			[
+				"cstring",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/CString.m"
+			],
+			[
+				"handle",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Handle.m"
+			],
+			[
+				"cast.m",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Casts/Cast.m"
+			],
+			[
+				"bitcast",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Casts/BitCast.m"
+			],
+			[
+				"paclet",
+				"compile/Compile/PacletInfo.m"
+			],
+			[
+				"string.m",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/String/String.m"
+			],
+			[
+				"string",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/String/String.m"
+			],
+			[
+				"libraryfunction",
+				"compile/Tests/Declarations/LibraryFunctionDeclaration.mt"
+			],
+			[
+				"compiledprogram",
+				"compile/Compile/Core/IR/CompiledProgram.m"
+			],
+			[
+				"nametools",
+				"compile/Compile/Utilities/NameTools.m"
+			],
+			[
+				"desugar",
+				"typeframework/TypeFramework/Language/DesugarType.m"
+			],
+			[
+				"listtuple",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/ListTuple.m"
+			],
+			[
+				"typeliteral",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/TypeLiteral.m"
+			],
+			[
+				"cast",
+				"compile/Compile/TypeSystem/Declarations/SpecificTypes/Casts/Cast.m"
+			],
+			[
+				"driver",
+				"compile/Compile/Driver.m"
+			],
+			[
+				"typespec",
+				"compile/Compile/TypeSystem/Declarations/Utilities/Intrinsics/Expect.m"
+			],
+			[
+				"index",
+				"content/projects/aspect-ratios-of-historical-societies/index.html"
+			],
+			[
+				"config",
+				"config.toml"
+			],
+			[
+				"latex",
+				"themes/wolframWebsite/layouts/partials/latex.html"
+			],
+			[
+				"return",
+				"compile/Compile/Core/IR/Instruction/ReturnInstruction.m"
+			],
+			[
+				"TypeSum",
+				"compile/Tests/TypeSystem/TypeSum/TypeSumSwitch.mt"
+			],
+			[
+				"unchecked",
+				"compile/Compile/TypeSystem/Declarations/Utilities/Unchecked.m"
+			],
+			[
+				"exception",
+				"compile/Compile/TypeSystem/Declarations/Environment/Exceptions.m"
+			],
+			[
+				"Throw",
+				"compile/Compile/Core/Analysis/Function/FunctionThrows.m"
+			],
+			[
+				"pacletInfo",
+				"compile/Compile/PacletInfo.m"
+			],
+			[
+				"typeresolve",
+				"typeframework/TypeFramework/Environments/TypeResolve.m"
+			],
+			[
+				"desugarType",
+				"typeframework/TypeFramework/Language/DesugarType.m"
+			],
+			[
+				"MapThread",
+				"compile/Compile/TypeSystem/Declarations/RectangularArray/DenseArray/Functional/MapThread.m"
+			],
+			[
+				"functiontype",
+				"typeframework/TypeFramework/Environments/FunctionTypeLookup.m"
+			],
+			[
+				"typeenvir",
+				"typeframework/TypeFramework/Environments/TypeEnvironment.m"
+			],
+			[
+				"mexpr",
+				"compile/Tests/AST/MExpr.mt"
+			],
+			[
+				"",
+				"compile/Compile/Compile.m"
+			],
+			[
+				"desugarTy",
+				"typeframework/TypeFramework/Language/DesugarType.m"
+			],
+			[
+				"structural/part.m",
+				"compile/Compile/TypeSystem/Declarations/RectangularArray/DenseArray/Structural/Part.m"
+			],
+			[
+				"New",
+				"compile/Compile/TypeSystem/Declarations/TypeProduct/New.m"
+			],
+			[
+				"TypeFprAll",
+				"typeframework/TypeFramework/TypeObjects/TypeForAll.m"
+			],
+			[
+				"typeeval",
+				"typeframework/TypeFramework/TypeObjects/TypeEvaluate.m"
+			],
+			[
+				"TypeEvaluate",
+				"typeframework/TypeFramework/TypeObjects/TypeEvaluate.m"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 231.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

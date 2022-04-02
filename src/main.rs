@@ -227,6 +227,10 @@ fn read_transaction<T: Read>(reader: &mut T) -> Result<BitcoinTransaction> {
 
 fn read_block<T: Read>(reader: &mut T) -> Result<BitcoinBlock> {
     let magic_number = read_le_u32(reader)?;
+    // The lask blk file seems to store a large buffer of 0s at the end, making this necessary:
+    if magic_number == 0 {
+        return Err(std::io::Error::new(std::io::ErrorKind::Other, "Magic number 0"));
+    }
     assert_eq!(magic_number, 0xd9b4bef9, "Magic number violation.");
 
     let _block_size = read_le_u32(reader)?;
@@ -262,7 +266,7 @@ fn read_block<T: Read>(reader: &mut T) -> Result<BitcoinBlock> {
 }
 
 fn main() {
-    let blocks = BlockCollection::new(std::path::PathBuf::from("/Users/christopher/Documents/bitcoin-core//blocks/"));
+    let blocks = BlockCollection::new(std::path::PathBuf::from("/Users/christopher/Documents/bitcoin-core/blocks/"));
 
     // Sequential
     let start = Instant::now();

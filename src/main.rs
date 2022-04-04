@@ -13,6 +13,12 @@ fn main() {
         "/Users/christopher/Documents/bitcoin-core/blocks/",
     ));
 
+    for t in blocks.transaction_iter().take(10) {
+        for o in t.outputs {
+            println!("Script: {:?}", o.script.expect("Failed to parse script.").opcodes);
+        }
+    }
+
     let start = Instant::now();
 
     let rates = exchange_rates::ExchangeRates::new();
@@ -30,18 +36,29 @@ fn main() {
     //     .collect::<Vec<_>>();
 
     let value_histogram: Mutex<HashMap<u32, u32>> = Mutex::new(HashMap::new());
-    blocks.transaction_par_iter().flat_map(|t| t.value_usd(&rates)).for_each(|v| {
-        let order;
-        if v == 0f64 {
-            order = 0;
-        } else {
-            order = (v.log10() * 100f64).floor() as u32;
-        }
-        *value_histogram.lock().expect("Poisoned mutex.").entry(order).or_insert(0) += 1;
-        // *value_histogram.entry(order).or_insert(0) += 1;
-    });
+    /*blocks
+        .transaction_par_iter()
+        .filter(|t| !t.is_coinbase)
+        .flat_map(|t| t.value_usd(&rates))
+        .for_each(|v| {
+            let order;
+            if v == 0f64 {
+                order = 0;
+            } else {
+                order = (v.log10() * 100f64).floor() as u32;
+            }
+            *value_histogram
+                .lock()
+                .expect("Poisoned mutex.")
+                .entry(order)
+                .or_insert(0) += 1;
+            // *value_histogram.entry(order).or_insert(0) += 1;
+        });*/
 
-    println!("{:?}\tFinished getting transaction values.", start.elapsed());
+    println!(
+        "{:?}\tFinished getting transaction values.",
+        start.elapsed()
+    );
 
     // for v in values {
     //     let order;
@@ -55,9 +72,9 @@ fn main() {
 
     println!("{:?}\tFinished creating histogram.", start.elapsed());
 
-    let output_file = std::fs::File::create("/Users/christopher/Downloads/test3.json")
+    let output_file = std::fs::File::create("/Users/christopher/Downloads/test4.json")
         .expect("Could not create output file.");
-    serde_json::to_writer(output_file, &value_histogram).expect("Failed to serialize to JSON.");
+    // serde_json::to_writer(output_file, &value_histogram).expect("Failed to serialize to JSON.");
 
     // // Sequential
     // let start = Instant::now();

@@ -1,29 +1,32 @@
+mod script;
+mod basic_reading;
+
 use chrono::prelude::*;
 use rayon::prelude::*;
 use std::fs;
-use std::io::{BufReader, Read, Result};
+use std::io;
+use std::io::{BufReader, Read};
 use std::path::PathBuf;
+use script::BitcoinScript;
+use basic_reading::*;
 
 pub struct BitcoinTransactionInput {
     pub prev_transaction: [u8; 32],
     pub prev_transaction_output: u32,
-    pub script: Vec<u8>,
+    pub script: Result<BitcoinScript, script::BitcoinScriptParseError>,
 }
 
 pub struct BitcoinTransactionOutput {
     pub value: u64,
-    pub script: Vec<u8>,
+    pub script: Result<BitcoinScript, script::BitcoinScriptParseError>,
 }
-
-// impl BitcoinTransactionOutput {
-    
-// }
 
 pub struct BitcoinTransaction {
     pub inputs: Vec<BitcoinTransactionInput>,
     pub outputs: Vec<BitcoinTransactionOutput>,
     pub lock_time: DateTime<Utc>,
     pub timestamp: DateTime<Utc>,
+    pub is_coinbase: bool
 }
 
 impl BitcoinTransaction {
@@ -112,53 +115,14 @@ impl BlockCollection {
     }
 }
 
-fn read_le_u8<T: Read>(reader: &mut T) -> Result<u8> {
-    let mut buffer = [0u8; 1];
-    reader.read_exact(&mut buffer)?;
-    Ok(u8::from_le_bytes(buffer))
-}
-
-fn read_le_u16<T: Read>(reader: &mut T) -> Result<u16> {
-    let mut buffer = [0u8; 2];
-    reader.read_exact(&mut buffer)?;
-    Ok(u16::from_le_bytes(buffer))
-}
-
-fn read_le_u32<T: Read>(reader: &mut T) -> Result<u32> {
-    let mut buffer = [0u8; 4];
-    reader.read_exact(&mut buffer)?;
-    Ok(u32::from_le_bytes(buffer))
-}
-
-fn read_le_u64<T: Read>(reader: &mut T) -> Result<u64> {
-    let mut buffer = [0u8; 8];
-    reader.read_exact(&mut buffer)?;
-    Ok(u64::from_le_bytes(buffer))
-}
-
-fn read_varint<T: Read>(reader: &mut T) -> Result<u64> {
-    let prefix = read_le_u8(reader)?;
-    read_varint_with_prefix(prefix, reader)
-}
-
-fn read_varint_with_prefix<T: Read>(prefix: u8, reader: &mut T) -> Result<u64> {
-    match prefix {
-        0xff => read_le_u64(reader),
-        0xfe => Ok(read_le_u32(reader)?.into()),
-        0xfd => Ok(read_le_u16(reader)?.into()),
-        _ => Ok(prefix.into()),
-    }
-}
-
-fn read_transaction_input<T: Read>(reader: &mut T) -> Result<BitcoinTransactionInput> {
+fn read_transaction_input<T: Read>(reader: &mut T) -> io::Result<BitcoinTransactionInput> {
     let mut prev_transaction = [0u8; 32];
     reader.read_exact(&mut prev_transaction)?;
 
     let prev_transaction_output = read_le_u32(reader)?;
     let script_size = read_varint(reader)?;
 
-    let mut script: Vec<u8> = std::iter::repeat(0u8).take(script_size as usize).collect();
-    reader.read_exact(&mut script)?;
+    let script = BitcoinScript::new(reader, script_size)?;
 
     let _sequence = read_le_u32(reader)?;
 
@@ -169,12 +133,11 @@ fn read_transaction_input<T: Read>(reader: &mut T) -> Result<BitcoinTransactionI
     })
 }
 
-fn read_transaction_output<T: Read>(reader: &mut T) -> Result<BitcoinTransactionOutput> {
+fn read_transaction_output<T: Read>(reader: &mut T) -> io::Result<BitcoinTransactionOutput> {
     let value = read_le_u64(reader)?;
     let script_size = read_varint(reader)?;
 
-    let mut script: Vec<u8> = std::iter::repeat(0u8).take(script_size as usize).collect();
-    reader.read_exact(&mut script)?;
+    let script = BitcoinScript::new(reader, script_size)?;
 
     Ok(BitcoinTransactionOutput { value, script })
 }
@@ -182,7 +145,7 @@ fn read_transaction_output<T: Read>(reader: &mut T) -> Result<BitcoinTransaction
 // Based on https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki
 // and https://bitcoincore.org/en/segwit_wallet_dev/
 // and https://github.com/bitcoin/bitcoin/blob/master/src/primitives/transaction.h
-fn read_witness<T: Read>(reader: &mut T) -> Result<()> {
+fn read_witness<T: Read>(reader: &mut T) -> io::Result<()> {
     let length = read_varint(reader)?;
     if length != 0 {
         for _ in 0..length {
@@ -198,7 +161,8 @@ fn read_witness<T: Read>(reader: &mut T) -> Result<()> {
 fn read_transaction<T: Read>(
     reader: &mut T,
     timestamp: DateTime<Utc>,
-) -> Result<BitcoinTransaction> {
+    is_coinbase: bool
+) -> io::Result<BitcoinTransaction> {
     let _version = read_le_u32(reader)?;
     let dummy = read_le_u8(reader)?;
     let input_count;
@@ -241,10 +205,11 @@ fn read_transaction<T: Read>(
         outputs,
         lock_time,
         timestamp,
+        is_coinbase
     })
 }
 
-fn read_block<T: Read>(reader: &mut T) -> Result<BitcoinBlock> {
+fn read_block<T: Read>(reader: &mut T) -> io::Result<BitcoinBlock> {
     let magic_number = read_le_u32(reader)?;
     // The lask blk file seems to store a large buffer of 0s at the end, making this necessary:
     if magic_number == 0 {
@@ -273,8 +238,8 @@ fn read_block<T: Read>(reader: &mut T) -> Result<BitcoinBlock> {
     let transaction_count = read_varint(reader)?;
 
     let mut transactions = Vec::with_capacity(transaction_count as usize);
-    for _ in 0..transaction_count {
-        transactions.push(read_transaction(reader, timestamp)?);
+    for i in 0..transaction_count {
+        transactions.push(read_transaction(reader, timestamp, i == 0)?);
     }
 
     Ok(BitcoinBlock {

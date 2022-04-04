@@ -1,0 +1,333 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     16358,        325]
+NotebookOptionsPosition[     15008,        297]
+NotebookOutlinePosition[     15404,        313]
+CellTagsIndexPosition[     15361,        310]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["OPCodes", "Section",
+ CellChangeTimes->{{3.858038387468161*^9, 
+  3.858038388877544*^9}},ExpressionUUID->"9f905cf4-b148-4d65-84d8-\
+cac344b7f56a"],
+
+Cell["\<\
+Based on section from this file: \
+https://github.com/bitcoin/bitcoin/blob/master/src/script/script.h\
+\>", "Text",
+ CellChangeTimes->{{3.8580383913402233`*^9, 
+  3.858038397882296*^9}},ExpressionUUID->"fcf1ae71-81b1-4093-a1c1-\
+05a23bfbe827"],
+
+Cell["https://en.bitcoin.it/wiki/Script", "Text",
+ CellChangeTimes->{
+  3.8580398322325373`*^9},ExpressionUUID->"2e4d4370-cb28-4368-8481-\
+7de36e08c1c4"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Iconize", "[", 
+  RowBox[{
+  "\"\<// push value\n    OP_0 = 0x00,\n    OP_FALSE = OP_0,\n    \
+OP_PUSHDATA1 = 0x4c,\n    OP_PUSHDATA2 = 0x4d,\n    OP_PUSHDATA4 = 0x4e,\n    \
+OP_1NEGATE = 0x4f,\n    OP_RESERVED = 0x50,\n    OP_1 = 0x51,\n    \
+OP_TRUE=OP_1,\n    OP_2 = 0x52,\n    OP_3 = 0x53,\n    OP_4 = 0x54,\n    OP_5 \
+= 0x55,\n    OP_6 = 0x56,\n    OP_7 = 0x57,\n    OP_8 = 0x58,\n    OP_9 = \
+0x59,\n    OP_10 = 0x5a,\n    OP_11 = 0x5b,\n    OP_12 = 0x5c,\n    OP_13 = \
+0x5d,\n    OP_14 = 0x5e,\n    OP_15 = 0x5f,\n    OP_16 = 0x60,\n\n    // \
+control\n    OP_NOP = 0x61,\n    OP_VER = 0x62,\n    OP_IF = 0x63,\n    \
+OP_NOTIF = 0x64,\n    OP_VERIF = 0x65,\n    OP_VERNOTIF = 0x66,\n    OP_ELSE \
+= 0x67,\n    OP_ENDIF = 0x68,\n    OP_VERIFY = 0x69,\n    OP_RETURN = 0x6a,\n\
+\n    // stack ops\n    OP_TOALTSTACK = 0x6b,\n    OP_FROMALTSTACK = 0x6c,\n  \
+  OP_2DROP = 0x6d,\n    OP_2DUP = 0x6e,\n    OP_3DUP = 0x6f,\n    OP_2OVER = \
+0x70,\n    OP_2ROT = 0x71,\n    OP_2SWAP = 0x72,\n    OP_IFDUP = 0x73,\n    \
+OP_DEPTH = 0x74,\n    OP_DROP = 0x75,\n    OP_DUP = 0x76,\n    OP_NIP = 0x77,\
+\n    OP_OVER = 0x78,\n    OP_PICK = 0x79,\n    OP_ROLL = 0x7a,\n    OP_ROT = \
+0x7b,\n    OP_SWAP = 0x7c,\n    OP_TUCK = 0x7d,\n\n    // splice ops\n    \
+OP_CAT = 0x7e,\n    OP_SUBSTR = 0x7f,\n    OP_LEFT = 0x80,\n    OP_RIGHT = \
+0x81,\n    OP_SIZE = 0x82,\n\n    // bit logic\n    OP_INVERT = 0x83,\n    \
+OP_AND = 0x84,\n    OP_OR = 0x85,\n    OP_XOR = 0x86,\n    OP_EQUAL = 0x87,\n \
+   OP_EQUALVERIFY = 0x88,\n    OP_RESERVED1 = 0x89,\n    OP_RESERVED2 = 0x8a,\
+\n\n    // numeric\n    OP_1ADD = 0x8b,\n    OP_1SUB = 0x8c,\n    OP_2MUL = \
+0x8d,\n    OP_2DIV = 0x8e,\n    OP_NEGATE = 0x8f,\n    OP_ABS = 0x90,\n    \
+OP_NOT = 0x91,\n    OP_0NOTEQUAL = 0x92,\n\n    OP_ADD = 0x93,\n    OP_SUB = \
+0x94,\n    OP_MUL = 0x95,\n    OP_DIV = 0x96,\n    OP_MOD = 0x97,\n    \
+OP_LSHIFT = 0x98,\n    OP_RSHIFT = 0x99,\n\n    OP_BOOLAND = 0x9a,\n    \
+OP_BOOLOR = 0x9b,\n    OP_NUMEQUAL = 0x9c,\n    OP_NUMEQUALVERIFY = 0x9d,\n   \
+ OP_NUMNOTEQUAL = 0x9e,\n    OP_LESSTHAN = 0x9f,\n    OP_GREATERTHAN = 0xa0,\n\
+    OP_LESSTHANOREQUAL = 0xa1,\n    OP_GREATERTHANOREQUAL = 0xa2,\n    OP_MIN \
+= 0xa3,\n    OP_MAX = 0xa4,\n\n    OP_WITHIN = 0xa5,\n\n    // crypto\n    \
+OP_RIPEMD160 = 0xa6,\n    OP_SHA1 = 0xa7,\n    OP_SHA256 = 0xa8,\n    \
+OP_HASH160 = 0xa9,\n    OP_HASH256 = 0xaa,\n    OP_CODESEPARATOR = 0xab,\n    \
+OP_CHECKSIG = 0xac,\n    OP_CHECKSIGVERIFY = 0xad,\n    OP_CHECKMULTISIG = \
+0xae,\n    OP_CHECKMULTISIGVERIFY = 0xaf,\n\n    // expansion\n    OP_NOP1 = \
+0xb0,\n    OP_CHECKLOCKTIMEVERIFY = 0xb1,\n    OP_NOP2 = \
+OP_CHECKLOCKTIMEVERIFY,\n    OP_CHECKSEQUENCEVERIFY = 0xb2,\n    OP_NOP3 = \
+OP_CHECKSEQUENCEVERIFY,\n    OP_NOP4 = 0xb3,\n    OP_NOP5 = 0xb4,\n    \
+OP_NOP6 = 0xb5,\n    OP_NOP7 = 0xb6,\n    OP_NOP8 = 0xb7,\n    OP_NOP9 = \
+0xb8,\n    OP_NOP10 = 0xb9,\n\n    // Opcode added by BIP 342 (Tapscript)\n   \
+ OP_CHECKSIGADD = 0xba,\n\n    OP_INVALIDOPCODE = 0xff,\>\"", ",", 
+   "\"\<Raw OpCode String\>\""}], "]"}]], "Input",
+ CellChangeTimes->{{3.8580384356335697`*^9, 3.858038442727491*^9}},
+ CellLabel->
+  "In[327]:=",ExpressionUUID->"2bd7325b-6bd1-4ab0-9c3c-ecd8020ee2d7"],
+
+Cell[BoxData[
+ InterpretationBox[
+  DynamicModuleBox[{Typeset`open = False}, 
+   TemplateBox[{"String", 
+     StyleBox[
+     "\"Raw OpCode String\"", "IconizedCustomName", StripOnInput -> False], 
+     GridBox[{{
+        RowBox[{
+          TagBox["\"Head: \"", "IconizedLabel"], "\[InvisibleSpace]", 
+          TagBox["String", "IconizedItem"]}]}, {
+        RowBox[{
+          TagBox["\"String length: \"", "IconizedLabel"], "\[InvisibleSpace]", 
+          TagBox["2748", "IconizedItem"]}]}, {
+        RowBox[{
+          TagBox["\"Byte count: \"", "IconizedLabel"], "\[InvisibleSpace]", 
+          TagBox["2816", "IconizedItem"]}]}}, 
+      GridBoxAlignment -> {"Columns" -> {{Left}}}, DefaultBaseStyle -> 
+      "Column", 
+      GridBoxItemSize -> {
+       "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}], 
+     Dynamic[Typeset`open]},
+    "IconizedObject"]],
+  "// push value\n    OP_0 = 0x00,\n    OP_FALSE = OP_0,\n    OP_PUSHDATA1 = \
+0x4c,\n    OP_PUSHDATA2 = 0x4d,\n    OP_PUSHDATA4 = 0x4e,\n    OP_1NEGATE = \
+0x4f,\n    OP_RESERVED = 0x50,\n    OP_1 = 0x51,\n    OP_TRUE=OP_1,\n    OP_2 \
+= 0x52,\n    OP_3 = 0x53,\n    OP_4 = 0x54,\n    OP_5 = 0x55,\n    OP_6 = \
+0x56,\n    OP_7 = 0x57,\n    OP_8 = 0x58,\n    OP_9 = 0x59,\n    OP_10 = \
+0x5a,\n    OP_11 = 0x5b,\n    OP_12 = 0x5c,\n    OP_13 = 0x5d,\n    OP_14 = \
+0x5e,\n    OP_15 = 0x5f,\n    OP_16 = 0x60,\n\n    // control\n    OP_NOP = \
+0x61,\n    OP_VER = 0x62,\n    OP_IF = 0x63,\n    OP_NOTIF = 0x64,\n    \
+OP_VERIF = 0x65,\n    OP_VERNOTIF = 0x66,\n    OP_ELSE = 0x67,\n    OP_ENDIF \
+= 0x68,\n    OP_VERIFY = 0x69,\n    OP_RETURN = 0x6a,\n\n    // stack ops\n   \
+ OP_TOALTSTACK = 0x6b,\n    OP_FROMALTSTACK = 0x6c,\n    OP_2DROP = 0x6d,\n   \
+ OP_2DUP = 0x6e,\n    OP_3DUP = 0x6f,\n    OP_2OVER = 0x70,\n    OP_2ROT = \
+0x71,\n    OP_2SWAP = 0x72,\n    OP_IFDUP = 0x73,\n    OP_DEPTH = 0x74,\n    \
+OP_DROP = 0x75,\n    OP_DUP = 0x76,\n    OP_NIP = 0x77,\n    OP_OVER = 0x78,\n\
+    OP_PICK = 0x79,\n    OP_ROLL = 0x7a,\n    OP_ROT = 0x7b,\n    OP_SWAP = \
+0x7c,\n    OP_TUCK = 0x7d,\n\n    // splice ops\n    OP_CAT = 0x7e,\n    \
+OP_SUBSTR = 0x7f,\n    OP_LEFT = 0x80,\n    OP_RIGHT = 0x81,\n    OP_SIZE = \
+0x82,\n\n    // bit logic\n    OP_INVERT = 0x83,\n    OP_AND = 0x84,\n    \
+OP_OR = 0x85,\n    OP_XOR = 0x86,\n    OP_EQUAL = 0x87,\n    OP_EQUALVERIFY = \
+0x88,\n    OP_RESERVED1 = 0x89,\n    OP_RESERVED2 = 0x8a,\n\n    // numeric\n \
+   OP_1ADD = 0x8b,\n    OP_1SUB = 0x8c,\n    OP_2MUL = 0x8d,\n    OP_2DIV = \
+0x8e,\n    OP_NEGATE = 0x8f,\n    OP_ABS = 0x90,\n    OP_NOT = 0x91,\n    \
+OP_0NOTEQUAL = 0x92,\n\n    OP_ADD = 0x93,\n    OP_SUB = 0x94,\n    OP_MUL = \
+0x95,\n    OP_DIV = 0x96,\n    OP_MOD = 0x97,\n    OP_LSHIFT = 0x98,\n    \
+OP_RSHIFT = 0x99,\n\n    OP_BOOLAND = 0x9a,\n    OP_BOOLOR = 0x9b,\n    \
+OP_NUMEQUAL = 0x9c,\n    OP_NUMEQUALVERIFY = 0x9d,\n    OP_NUMNOTEQUAL = \
+0x9e,\n    OP_LESSTHAN = 0x9f,\n    OP_GREATERTHAN = 0xa0,\n    \
+OP_LESSTHANOREQUAL = 0xa1,\n    OP_GREATERTHANOREQUAL = 0xa2,\n    OP_MIN = \
+0xa3,\n    OP_MAX = 0xa4,\n\n    OP_WITHIN = 0xa5,\n\n    // crypto\n    \
+OP_RIPEMD160 = 0xa6,\n    OP_SHA1 = 0xa7,\n    OP_SHA256 = 0xa8,\n    \
+OP_HASH160 = 0xa9,\n    OP_HASH256 = 0xaa,\n    OP_CODESEPARATOR = 0xab,\n    \
+OP_CHECKSIG = 0xac,\n    OP_CHECKSIGVERIFY = 0xad,\n    OP_CHECKMULTISIG = \
+0xae,\n    OP_CHECKMULTISIGVERIFY = 0xaf,\n\n    // expansion\n    OP_NOP1 = \
+0xb0,\n    OP_CHECKLOCKTIMEVERIFY = 0xb1,\n    OP_NOP2 = \
+OP_CHECKLOCKTIMEVERIFY,\n    OP_CHECKSEQUENCEVERIFY = 0xb2,\n    OP_NOP3 = \
+OP_CHECKSEQUENCEVERIFY,\n    OP_NOP4 = 0xb3,\n    OP_NOP5 = 0xb4,\n    \
+OP_NOP6 = 0xb5,\n    OP_NOP7 = 0xb6,\n    OP_NOP8 = 0xb7,\n    OP_NOP9 = \
+0xb8,\n    OP_NOP10 = 0xb9,\n\n    // Opcode added by BIP 342 (Tapscript)\n   \
+ OP_CHECKSIGADD = 0xba,\n\n    OP_INVALIDOPCODE = 0xff,",
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{3.858038443308538*^9},
+ CellLabel->
+  "Out[327]=",ExpressionUUID->"761d70b9-8b6f-4c74-880c-e5b90901dc50"]
+}, {2}]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"rawOpcodeString", "=", 
+   InterpretationBox[
+    DynamicModuleBox[{Typeset`open = False}, 
+     TemplateBox[{"String", 
+       StyleBox[
+       "\"Raw OpCode String\"", "IconizedCustomName", StripOnInput -> False], 
+       
+       GridBox[{{
+          RowBox[{
+            TagBox["\"Head: \"", "IconizedLabel"], "\[InvisibleSpace]", 
+            TagBox["String", "IconizedItem"]}]}, {
+          RowBox[{
+            TagBox["\"String length: \"", "IconizedLabel"], 
+            "\[InvisibleSpace]", 
+            TagBox["2748", "IconizedItem"]}]}, {
+          RowBox[{
+            TagBox["\"Byte count: \"", "IconizedLabel"], "\[InvisibleSpace]", 
+            
+            TagBox["2816", "IconizedItem"]}]}}, 
+        GridBoxAlignment -> {"Columns" -> {{Left}}}, DefaultBaseStyle -> 
+        "Column", 
+        GridBoxItemSize -> {
+         "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}], 
+       Dynamic[Typeset`open]},
+      "IconizedObject"]],
+    "// push value\n    OP_0 = 0x00,\n    OP_FALSE = OP_0,\n    OP_PUSHDATA1 \
+= 0x4c,\n    OP_PUSHDATA2 = 0x4d,\n    OP_PUSHDATA4 = 0x4e,\n    OP_1NEGATE = \
+0x4f,\n    OP_RESERVED = 0x50,\n    OP_1 = 0x51,\n    OP_TRUE=OP_1,\n    OP_2 \
+= 0x52,\n    OP_3 = 0x53,\n    OP_4 = 0x54,\n    OP_5 = 0x55,\n    OP_6 = \
+0x56,\n    OP_7 = 0x57,\n    OP_8 = 0x58,\n    OP_9 = 0x59,\n    OP_10 = \
+0x5a,\n    OP_11 = 0x5b,\n    OP_12 = 0x5c,\n    OP_13 = 0x5d,\n    OP_14 = \
+0x5e,\n    OP_15 = 0x5f,\n    OP_16 = 0x60,\n\n    // control\n    OP_NOP = \
+0x61,\n    OP_VER = 0x62,\n    OP_IF = 0x63,\n    OP_NOTIF = 0x64,\n    \
+OP_VERIF = 0x65,\n    OP_VERNOTIF = 0x66,\n    OP_ELSE = 0x67,\n    OP_ENDIF \
+= 0x68,\n    OP_VERIFY = 0x69,\n    OP_RETURN = 0x6a,\n\n    // stack ops\n   \
+ OP_TOALTSTACK = 0x6b,\n    OP_FROMALTSTACK = 0x6c,\n    OP_2DROP = 0x6d,\n   \
+ OP_2DUP = 0x6e,\n    OP_3DUP = 0x6f,\n    OP_2OVER = 0x70,\n    OP_2ROT = \
+0x71,\n    OP_2SWAP = 0x72,\n    OP_IFDUP = 0x73,\n    OP_DEPTH = 0x74,\n    \
+OP_DROP = 0x75,\n    OP_DUP = 0x76,\n    OP_NIP = 0x77,\n    OP_OVER = 0x78,\n\
+    OP_PICK = 0x79,\n    OP_ROLL = 0x7a,\n    OP_ROT = 0x7b,\n    OP_SWAP = \
+0x7c,\n    OP_TUCK = 0x7d,\n\n    // splice ops\n    OP_CAT = 0x7e,\n    \
+OP_SUBSTR = 0x7f,\n    OP_LEFT = 0x80,\n    OP_RIGHT = 0x81,\n    OP_SIZE = \
+0x82,\n\n    // bit logic\n    OP_INVERT = 0x83,\n    OP_AND = 0x84,\n    \
+OP_OR = 0x85,\n    OP_XOR = 0x86,\n    OP_EQUAL = 0x87,\n    OP_EQUALVERIFY = \
+0x88,\n    OP_RESERVED1 = 0x89,\n    OP_RESERVED2 = 0x8a,\n\n    // numeric\n \
+   OP_1ADD = 0x8b,\n    OP_1SUB = 0x8c,\n    OP_2MUL = 0x8d,\n    OP_2DIV = \
+0x8e,\n    OP_NEGATE = 0x8f,\n    OP_ABS = 0x90,\n    OP_NOT = 0x91,\n    \
+OP_0NOTEQUAL = 0x92,\n\n    OP_ADD = 0x93,\n    OP_SUB = 0x94,\n    OP_MUL = \
+0x95,\n    OP_DIV = 0x96,\n    OP_MOD = 0x97,\n    OP_LSHIFT = 0x98,\n    \
+OP_RSHIFT = 0x99,\n\n    OP_BOOLAND = 0x9a,\n    OP_BOOLOR = 0x9b,\n    \
+OP_NUMEQUAL = 0x9c,\n    OP_NUMEQUALVERIFY = 0x9d,\n    OP_NUMNOTEQUAL = \
+0x9e,\n    OP_LESSTHAN = 0x9f,\n    OP_GREATERTHAN = 0xa0,\n    \
+OP_LESSTHANOREQUAL = 0xa1,\n    OP_GREATERTHANOREQUAL = 0xa2,\n    OP_MIN = \
+0xa3,\n    OP_MAX = 0xa4,\n\n    OP_WITHIN = 0xa5,\n\n    // crypto\n    \
+OP_RIPEMD160 = 0xa6,\n    OP_SHA1 = 0xa7,\n    OP_SHA256 = 0xa8,\n    \
+OP_HASH160 = 0xa9,\n    OP_HASH256 = 0xaa,\n    OP_CODESEPARATOR = 0xab,\n    \
+OP_CHECKSIG = 0xac,\n    OP_CHECKSIGVERIFY = 0xad,\n    OP_CHECKMULTISIG = \
+0xae,\n    OP_CHECKMULTISIGVERIFY = 0xaf,\n\n    // expansion\n    OP_NOP1 = \
+0xb0,\n    OP_CHECKLOCKTIMEVERIFY = 0xb1,\n    OP_NOP2 = \
+OP_CHECKLOCKTIMEVERIFY,\n    OP_CHECKSEQUENCEVERIFY = 0xb2,\n    OP_NOP3 = \
+OP_CHECKSEQUENCEVERIFY,\n    OP_NOP4 = 0xb3,\n    OP_NOP5 = 0xb4,\n    \
+OP_NOP6 = 0xb5,\n    OP_NOP7 = 0xb6,\n    OP_NOP8 = 0xb7,\n    OP_NOP9 = \
+0xb8,\n    OP_NOP10 = 0xb9,\n\n    // Opcode added by BIP 342 (Tapscript)\n   \
+ OP_CHECKSIGADD = 0xba,\n\n    OP_INVALIDOPCODE = 0xff,",
+    SelectWithContents->True,
+    Selectable->False]}], ";"}]], "Input",
+ CellChangeTimes->{{3.8580385182756653`*^9, 3.858038521485668*^9}},
+ CellLabel->
+  "In[328]:=",ExpressionUUID->"88f8a17d-108e-45cf-8d47-ea3d0a1b65f8"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"opCodeValues", "=", 
+   RowBox[{"Select", "[", 
+    RowBox[{
+     RowBox[{"Association", "[", 
+      RowBox[{"Rule", "@@@", 
+       RowBox[{"StringCases", "[", 
+        RowBox[{"rawOpcodeString", ",", 
+         RowBox[{
+          RowBox[{"Shortest", "[", 
+           RowBox[{
+            RowBox[{"name", ":", 
+             RowBox[{"(", 
+              RowBox[{"\"\<OP_\>\"", "~~", "__"}], ")"}]}], "~~", 
+            RowBox[{"Longest", "[", 
+             RowBox[{"WhitespaceCharacter", "..."}], "]"}], "~~", "\"\<=\>\"",
+             "~~", 
+            RowBox[{"Longest", "[", 
+             RowBox[{"WhitespaceCharacter", "..."}], "]"}], "~~", "val__", 
+            "~~", "\"\<,\>\""}], "]"}], ":>", 
+          RowBox[{"{", 
+           RowBox[{"name", ",", "val"}], "}"}]}]}], "]"}]}], "]"}], ",", 
+     RowBox[{"StringStartsQ", "[", "\"\<0x\>\"", "]"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.858038522224237*^9, 3.858038672779889*^9}},
+ CellLabel->
+  "In[340]:=",ExpressionUUID->"096f9130-6b4f-46bb-97e1-236912325bd6"],
+
+Cell["Enum:", "Text",
+ CellChangeTimes->{{3.8580393314505043`*^9, 
+  3.8580393322875347`*^9}},ExpressionUUID->"fc6c8379-a3d1-4a7b-8d0b-\
+44b270bc1766"],
+
+Cell[BoxData[
+ RowBox[{"CopyToClipboard", "@", 
+  RowBox[{"StringRiffle", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"\"\<OP\>\"", "<>", "#"}], "&"}], "/@", 
+     RowBox[{"Keys", "[", "opCodeValues", "]"}]}], ",", "\"\<,\\n\>\""}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.858038838114592*^9, 3.8580388525609713`*^9}, {
+   3.858038883738072*^9, 3.858038890081832*^9}, {3.858039051116982*^9, 
+   3.858039074886723*^9}, 3.858039323385268*^9},
+ CellLabel->
+  "In[351]:=",ExpressionUUID->"39a761b9-4000-478d-a961-cf4adffe0634"],
+
+Cell["Match:", "Text",
+ CellChangeTimes->{{3.8580393338772497`*^9, 
+  3.8580393347167473`*^9}},ExpressionUUID->"3b0829c7-1b66-496c-9e55-\
+22abcf0ca088"],
+
+Cell[BoxData[
+ RowBox[{"CopyToClipboard", "[", 
+  RowBox[{"StringRiffle", "[", 
+   RowBox[{
+    RowBox[{"KeyValueMap", "[", 
+     RowBox[{
+      RowBox[{"StringTemplate", "[", "\"\<`2` => OPCode::`1`\>\"", "]"}], ",",
+       "opCodeValues"}], "]"}], ",", "\"\<,\\n\>\""}], "]"}], "]"}]], "Input",\
+
+ CellChangeTimes->{{3.858039341568616*^9, 3.858039410956244*^9}},
+ CellLabel->
+  "In[356]:=",ExpressionUUID->"ecc5560a-c58b-410e-988b-0c3e33737004"]
+}, Open  ]]
+},
+WindowSize->{808, 897},
+WindowMargins->{{68, Automatic}, {Automatic, 24}},
+FrontEndVersion->"13.0 for Mac OS X x86 (64-bit) (December 2, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"5976b54b-509c-4409-b7ad-d57ed79a0127"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 152, 3, 67, "Section",ExpressionUUID->"9f905cf4-b148-4d65-84d8-cac344b7f56a"],
+Cell[735, 27, 253, 6, 35, "Text",ExpressionUUID->"fcf1ae71-81b1-4093-a1c1-05a23bfbe827"],
+Cell[991, 35, 153, 3, 35, "Text",ExpressionUUID->"2e4d4370-cb28-4368-8481-7de36e08c1c4"],
+Cell[CellGroupData[{
+Cell[1169, 42, 3233, 45, 2908, "Input",ExpressionUUID->"2bd7325b-6bd1-4ab0-9c3c-ecd8020ee2d7"],
+Cell[4405, 89, 4019, 65, 39, "Output",ExpressionUUID->"761d70b9-8b6f-4c74-880c-e5b90901dc50"]
+}, {2}]],
+Cell[8436, 157, 4180, 70, 35, "Input",ExpressionUUID->"88f8a17d-108e-45cf-8d47-ea3d0a1b65f8"],
+Cell[12619, 229, 1068, 27, 157, "Input",ExpressionUUID->"096f9130-6b4f-46bb-97e1-236912325bd6"],
+Cell[13690, 258, 151, 3, 35, "Text",ExpressionUUID->"fc6c8379-a3d1-4a7b-8d0b-44b270bc1766"],
+Cell[13844, 263, 543, 13, 30, "Input",ExpressionUUID->"39a761b9-4000-478d-a961-cf4adffe0634"],
+Cell[14390, 278, 152, 3, 35, "Text",ExpressionUUID->"3b0829c7-1b66-496c-9e55-22abcf0ca088"],
+Cell[14545, 283, 447, 11, 52, "Input",ExpressionUUID->"ecc5560a-c58b-410e-988b-0c3e33737004"]
+}, Open  ]]
+}
+]
+*)
+

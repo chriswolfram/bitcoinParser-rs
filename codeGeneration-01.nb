@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     16358,        325]
-NotebookOptionsPosition[     15008,        297]
-NotebookOutlinePosition[     15404,        313]
-CellTagsIndexPosition[     15361,        310]
+NotebookDataLength[     16418,        326]
+NotebookOptionsPosition[     15068,        298]
+NotebookOutlinePosition[     15464,        314]
+CellTagsIndexPosition[     15421,        311]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -287,12 +287,13 @@ Cell[BoxData[
    RowBox[{
     RowBox[{"KeyValueMap", "[", 
      RowBox[{
-      RowBox[{"StringTemplate", "[", "\"\<`2` => OPCode::`1`\>\"", "]"}], ",",
-       "opCodeValues"}], "]"}], ",", "\"\<,\\n\>\""}], "]"}], "]"}]], "Input",\
-
- CellChangeTimes->{{3.858039341568616*^9, 3.858039410956244*^9}},
+      RowBox[{
+      "StringTemplate", "[", "\"\<`2` => Some(OPCode::`1`)\>\"", "]"}], ",", 
+      "opCodeValues"}], "]"}], ",", "\"\<,\\n\>\""}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.858039341568616*^9, 3.858039410956244*^9}, {
+  3.858043001137348*^9, 3.858043005936996*^9}},
  CellLabel->
-  "In[356]:=",ExpressionUUID->"ecc5560a-c58b-410e-988b-0c3e33737004"]
+  "In[357]:=",ExpressionUUID->"ecc5560a-c58b-410e-988b-0c3e33737004"]
 }, Open  ]]
 },
 WindowSize->{808, 897},
@@ -325,7 +326,7 @@ Cell[12619, 229, 1068, 27, 157, "Input",ExpressionUUID->"096f9130-6b4f-46bb-97e1
 Cell[13690, 258, 151, 3, 35, "Text",ExpressionUUID->"fc6c8379-a3d1-4a7b-8d0b-44b270bc1766"],
 Cell[13844, 263, 543, 13, 30, "Input",ExpressionUUID->"39a761b9-4000-478d-a961-cf4adffe0634"],
 Cell[14390, 278, 152, 3, 35, "Text",ExpressionUUID->"3b0829c7-1b66-496c-9e55-22abcf0ca088"],
-Cell[14545, 283, 447, 11, 52, "Input",ExpressionUUID->"ecc5560a-c58b-410e-988b-0c3e33737004"]
+Cell[14545, 283, 507, 12, 73, "Input",ExpressionUUID->"ecc5560a-c58b-410e-988b-0c3e33737004"]
 }, Open  ]]
 }
 ]

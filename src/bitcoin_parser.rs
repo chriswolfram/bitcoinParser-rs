@@ -1,33 +1,44 @@
-use std::io::{Read, Result, BufReader};
-use std::path::PathBuf;
-use std::fs;
 use chrono::prelude::*;
 use rayon::prelude::*;
+use std::fs;
+use std::io::{BufReader, Read, Result};
+use std::path::PathBuf;
 
 pub struct BitcoinTransactionInput {
-    prev_transaction: [u8; 32],
-    prev_transaction_output: u32,
-    script: Vec<u8>,
+    pub prev_transaction: [u8; 32],
+    pub prev_transaction_output: u32,
+    pub script: Vec<u8>,
 }
 
 pub struct BitcoinTransactionOutput {
-    value: u64,
-    script: Vec<u8>,
+    pub value: u64,
+    pub script: Vec<u8>,
 }
 
+// impl BitcoinTransactionOutput {
+    
+// }
+
 pub struct BitcoinTransaction {
-    inputs: Vec<BitcoinTransactionInput>,
-    outputs: Vec<BitcoinTransactionOutput>,
-    lock_time: DateTime<Utc>,
+    pub inputs: Vec<BitcoinTransactionInput>,
+    pub outputs: Vec<BitcoinTransactionOutput>,
+    pub lock_time: DateTime<Utc>,
+    pub timestamp: DateTime<Utc>,
+}
+
+impl BitcoinTransaction {
+    pub fn value(self: &BitcoinTransaction) -> u64 {
+        self.outputs.iter().map(|o| o.value).sum()
+    }
 }
 
 pub struct BitcoinBlock {
-    version: u32,
-    prev_hash: [u8; 32],
-    merkle_root: [u8; 32],
-    timestamp: DateTime<Utc>,
-    nonce: u32,
-    transactions: Vec<BitcoinTransaction>,
+    pub version: u32,
+    pub prev_hash: [u8; 32],
+    pub merkle_root: [u8; 32],
+    pub timestamp: DateTime<Utc>,
+    pub nonce: u32,
+    pub transactions: Vec<BitcoinTransaction>,
 }
 
 pub struct BlockFileIterator<T: Read> {
@@ -35,7 +46,7 @@ pub struct BlockFileIterator<T: Read> {
 }
 
 pub struct BlockCollection {
-    base_dir: std::path::PathBuf,
+    pub base_dir: std::path::PathBuf,
 }
 
 impl<T: Read> BlockFileIterator<T> {
@@ -88,6 +99,16 @@ impl BlockCollection {
                 ))
                 .par_bridge()
             })
+    }
+
+    pub fn transaction_iter(self: &BlockCollection) -> impl Iterator<Item = BitcoinTransaction> {
+        self.iter().flat_map(|b| b.transactions.into_iter())
+    }
+
+    pub fn transaction_par_iter(
+        self: &BlockCollection,
+    ) -> impl ParallelIterator<Item = BitcoinTransaction> {
+        self.par_iter().flat_map(|b| b.transactions.into_par_iter())
     }
 }
 
@@ -174,7 +195,10 @@ fn read_witness<T: Read>(reader: &mut T) -> Result<()> {
     Ok(())
 }
 
-fn read_transaction<T: Read>(reader: &mut T) -> Result<BitcoinTransaction> {
+fn read_transaction<T: Read>(
+    reader: &mut T,
+    timestamp: DateTime<Utc>,
+) -> Result<BitcoinTransaction> {
     let _version = read_le_u32(reader)?;
     let dummy = read_le_u8(reader)?;
     let input_count;
@@ -216,6 +240,7 @@ fn read_transaction<T: Read>(reader: &mut T) -> Result<BitcoinTransaction> {
         inputs,
         outputs,
         lock_time,
+        timestamp,
     })
 }
 
@@ -223,7 +248,10 @@ fn read_block<T: Read>(reader: &mut T) -> Result<BitcoinBlock> {
     let magic_number = read_le_u32(reader)?;
     // The lask blk file seems to store a large buffer of 0s at the end, making this necessary:
     if magic_number == 0 {
-        return Err(std::io::Error::new(std::io::ErrorKind::Other, "Magic number 0"));
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Magic number 0",
+        ));
     }
     assert_eq!(magic_number, 0xd9b4bef9, "Magic number violation.");
 
@@ -246,7 +274,7 @@ fn read_block<T: Read>(reader: &mut T) -> Result<BitcoinBlock> {
 
     let mut transactions = Vec::with_capacity(transaction_count as usize);
     for _ in 0..transaction_count {
-        transactions.push(read_transaction(reader)?);
+        transactions.push(read_transaction(reader, timestamp)?);
     }
 
     Ok(BitcoinBlock {

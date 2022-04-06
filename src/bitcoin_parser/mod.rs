@@ -7,6 +7,8 @@ use std::fs;
 use std::io;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
+use std::convert::TryInto;
+use sha2::{Sha256, Digest};
 use script::BitcoinScript;
 use basic_reading::*;
 
@@ -26,7 +28,8 @@ pub struct BitcoinTransaction {
     pub outputs: Vec<BitcoinTransactionOutput>,
     pub lock_time: DateTime<Utc>,
     pub timestamp: DateTime<Utc>,
-    pub is_coinbase: bool
+    pub is_coinbase: bool,
+    pub hash: [u8; 32]
 }
 
 impl BitcoinTransaction {
@@ -115,16 +118,17 @@ impl BlockCollection {
     }
 }
 
-fn read_transaction_input<T: Read>(reader: &mut T) -> io::Result<BitcoinTransactionInput> {
+fn read_transaction_input<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionInput> {
     let mut prev_transaction = [0u8; 32];
     reader.read_exact(&mut prev_transaction)?;
+    hasher.update(prev_transaction);
 
-    let prev_transaction_output = read_le_u32(reader)?;
-    let script_size = read_varint(reader)?;
+    let prev_transaction_output = read_le_u32_hash(reader, hasher)?;
+    let script_size = read_varint_hash(reader, hasher)?;
 
-    let script = BitcoinScript::new(reader, script_size)?;
+    let script = BitcoinScript::new(reader, script_size, hasher)?;
 
-    let _sequence = read_le_u32(reader)?;
+    let _sequence = read_le_u32_hash(reader, hasher)?;
 
     Ok(BitcoinTransactionInput {
         prev_transaction,
@@ -133,11 +137,11 @@ fn read_transaction_input<T: Read>(reader: &mut T) -> io::Result<BitcoinTransact
     })
 }
 
-fn read_transaction_output<T: Read>(reader: &mut T) -> io::Result<BitcoinTransactionOutput> {
-    let value = read_le_u64(reader)?;
-    let script_size = read_varint(reader)?;
+fn read_transaction_output<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionOutput> {
+    let value = read_le_u64_hash(reader, hasher)?;
+    let script_size = read_varint_hash(reader, hasher)?;
 
-    let script = BitcoinScript::new(reader, script_size)?;
+    let script = BitcoinScript::new(reader, script_size, hasher)?;
 
     Ok(BitcoinTransactionOutput { value, script })
 }
@@ -145,13 +149,14 @@ fn read_transaction_output<T: Read>(reader: &mut T) -> io::Result<BitcoinTransac
 // Based on https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki
 // and https://bitcoincore.org/en/segwit_wallet_dev/
 // and https://github.com/bitcoin/bitcoin/blob/master/src/primitives/transaction.h
-fn read_witness<T: Read>(reader: &mut T) -> io::Result<()> {
-    let length = read_varint(reader)?;
+fn read_witness<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<()> {
+    let length = read_varint_hash(reader, hasher)?;
     if length != 0 {
         for _ in 0..length {
-            let inner_length = read_varint(reader)?;
+            let inner_length = read_varint_hash(reader, hasher)?;
             let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(inner_length as usize).collect();
             reader.read_exact(&mut buffer)?;
+            hasher.update(buffer);
         }
     }
 
@@ -163,49 +168,57 @@ fn read_transaction<T: Read>(
     timestamp: DateTime<Utc>,
     is_coinbase: bool
 ) -> io::Result<BitcoinTransaction> {
-    let _version = read_le_u32(reader)?;
-    let dummy = read_le_u8(reader)?;
+    let mut hasher = Sha256::new();
+
+    let _version = read_le_u32_hash(reader, &mut hasher)?;
+    let dummy = read_le_u8_hash(reader, &mut hasher)?;
     let input_count;
     let flags;
     let extended_format = dummy == 0x00;
 
     if extended_format {
-        flags = read_le_u8(reader)?;
-        input_count = read_varint(reader)?;
+        flags = read_le_u8_hash(reader, &mut hasher)?;
+        input_count = read_varint_hash(reader, &mut hasher)?;
     } else {
         flags = 0;
-        input_count = read_varint_with_prefix(dummy, reader)?;
+        input_count = read_varint_with_prefix_hash(dummy, reader, &mut hasher)?;
     }
 
     let mut inputs = Vec::with_capacity(input_count as usize);
     for _ in 0..input_count {
-        inputs.push(read_transaction_input(reader)?);
+        inputs.push(read_transaction_input(reader, &mut hasher)?);
     }
 
-    let output_count = read_varint(reader)?;
+    let output_count = read_varint_hash(reader, &mut hasher)?;
 
     let mut outputs = Vec::with_capacity(output_count as usize);
     for _ in 0..output_count {
-        outputs.push(read_transaction_output(reader)?);
+        outputs.push(read_transaction_output(reader, &mut hasher)?);
     }
 
     if extended_format && flags == 0x01 {
         for _ in 0..input_count {
-            read_witness(reader)?;
+            read_witness(reader, &mut hasher)?;
         }
     }
 
     let lock_time = DateTime::from_utc(
-        NaiveDateTime::from_timestamp(read_le_u32(reader)? as i64, 0),
+        NaiveDateTime::from_timestamp(read_le_u32_hash(reader, &mut hasher)? as i64, 0),
         Utc,
     );
 
+    let first_hash = hasher.finalize();
+    let mut second_hasher = Sha256::new();
+    second_hasher.update(first_hash);
+    let hash = second_hasher.finalize().as_slice().try_into().expect("Hash of unexpected length");
+    
     Ok(BitcoinTransaction {
         inputs,
         outputs,
         lock_time,
         timestamp,
-        is_coinbase
+        is_coinbase,
+        hash
     })
 }
 

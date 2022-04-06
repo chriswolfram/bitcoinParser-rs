@@ -1,3 +1,5 @@
+use leveldb::iterator::Iterable;
+use leveldb::kv::KV;
 use rayon::iter::ParallelIterator;
 use serde_json;
 use std::collections::HashMap;
@@ -5,8 +7,45 @@ use std::time::Instant;
 
 use std::sync::Mutex;
 
+use leveldb;
+
 mod bitcoin_parser;
 mod exchange_rates;
+
+#[derive(Debug)]
+struct VecKey {
+    key: Vec<u8>,
+}
+
+impl db_key::Key for VecKey {
+    fn from_u8(key: &[u8]) -> Self {
+        VecKey{key: Vec::from(key)}
+    }
+
+    fn as_slice<T, F: Fn(&[u8]) -> T>(&self, f: F) -> T {
+        f(&self.key)
+    }
+}
+
+fn main_old() {
+    // let index_db = leveldb::database::Database::<VecKey>::open(std::path::Path::new("/Users/christopher/Documents/bitcoin-core/blocks/index/"), leveldb::database::options::Options::new()).expect("Could not open leveldb.");
+    let index_db = leveldb::database::Database::<VecKey>::open(std::path::Path::new("/Users/christopher/Documents/bitcoin-core/indexes/txindex/"), leveldb::database::options::Options::new()).expect("Could not open leveldb.");
+
+    let read_options = leveldb::database::options::ReadOptions::new();
+    // let res = index_db.get(read_options, VecKey{key: b"test".to_vec()});
+    // println!("Res: {:?}", res);
+    /* for (key, val) in index_db.iter(read_options).filter(|(k, _)| k.key.first().map(|v| v == &0x74).unwrap_or(false)).take(100) {
+        println!("Key: {:x?}\nVal: {:x?}\n", key.key, val);
+    }*/
+    let mut out = std::collections::HashSet::new();
+    let mut counter = 0;
+    for (key, val) in index_db.iter(read_options).take(1000) {
+        out.insert(key.key[0]);
+        counter += 1;
+    }
+    println!("Counter: {:?}", counter);
+    println!("Set: {:?}, {:x?}", out, out);
+}
 
 fn main() {
     let blocks = bitcoin_parser::BlockCollection::new(std::path::PathBuf::from(
@@ -14,9 +53,10 @@ fn main() {
     ));
 
     for t in blocks.transaction_iter().take(10) {
-        for o in t.outputs {
-            println!("Script: {:?}", o.script.expect("Failed to parse script.").opcodes);
-        }
+        println!("Hash: {:x?}\t Time: {:?}\t Coinbase: {:?}\t Input count: {:?}\t Output count: {:?}", t.hash, t.timestamp, t.is_coinbase, t.inputs.len(), t.outputs.len());
+        // for o in t.outputs {
+        //     println!("Script: {:?}", o.script.expect("Failed to parse script.").opcodes);
+        // }
     }
 
     let start = Instant::now();

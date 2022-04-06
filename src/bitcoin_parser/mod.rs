@@ -7,8 +7,7 @@ use std::fs;
 use std::io;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
-use std::convert::TryInto;
-use sha2::{Sha256, Digest};
+use bitcoin_hashes::{sha256d, HashEngine, Hash};
 use script::BitcoinScript;
 use basic_reading::*;
 
@@ -29,7 +28,7 @@ pub struct BitcoinTransaction {
     pub lock_time: DateTime<Utc>,
     pub timestamp: DateTime<Utc>,
     pub is_coinbase: bool,
-    pub hash: [u8; 32]
+    pub hash: sha256d::Hash
 }
 
 impl BitcoinTransaction {
@@ -118,10 +117,10 @@ impl BlockCollection {
     }
 }
 
-fn read_transaction_input<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionInput> {
+fn read_transaction_input<T: Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionInput> {
     let mut prev_transaction = [0u8; 32];
     reader.read_exact(&mut prev_transaction)?;
-    hasher.update(prev_transaction);
+    hasher.input(&prev_transaction);
 
     let prev_transaction_output = read_le_u32_hash(reader, hasher)?;
     let script_size = read_varint_hash(reader, hasher)?;
@@ -137,7 +136,7 @@ fn read_transaction_input<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) ->
     })
 }
 
-fn read_transaction_output<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionOutput> {
+fn read_transaction_output<T: Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionOutput> {
     let value = read_le_u64_hash(reader, hasher)?;
     let script_size = read_varint_hash(reader, hasher)?;
 
@@ -149,14 +148,14 @@ fn read_transaction_output<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -
 // Based on https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki
 // and https://bitcoincore.org/en/segwit_wallet_dev/
 // and https://github.com/bitcoin/bitcoin/blob/master/src/primitives/transaction.h
-fn read_witness<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<()> {
-    let length = read_varint_hash(reader, hasher)?;
+fn read_witness<T: Read>(reader: &mut T) -> io::Result<()> {
+    let length = read_varint(reader)?;
     if length != 0 {
         for _ in 0..length {
-            let inner_length = read_varint_hash(reader, hasher)?;
+            let inner_length = read_varint(reader)?;
             let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(inner_length as usize).collect();
             reader.read_exact(&mut buffer)?;
-            hasher.update(buffer);
+            // hasher.input(&buffer);
         }
     }
 
@@ -168,19 +167,20 @@ fn read_transaction<T: Read>(
     timestamp: DateTime<Utc>,
     is_coinbase: bool
 ) -> io::Result<BitcoinTransaction> {
-    let mut hasher = Sha256::new();
+    let mut hasher = sha256d::Hash::engine();
 
     let _version = read_le_u32_hash(reader, &mut hasher)?;
-    let dummy = read_le_u8_hash(reader, &mut hasher)?;
+    let dummy = read_le_u8(reader)?;
     let input_count;
     let flags;
     let extended_format = dummy == 0x00;
 
     if extended_format {
-        flags = read_le_u8_hash(reader, &mut hasher)?;
+        flags = read_le_u8(reader)?;
         input_count = read_varint_hash(reader, &mut hasher)?;
     } else {
         flags = 0;
+        hasher.input(&[dummy]);
         input_count = read_varint_with_prefix_hash(dummy, reader, &mut hasher)?;
     }
 
@@ -198,7 +198,7 @@ fn read_transaction<T: Read>(
 
     if extended_format && flags == 0x01 {
         for _ in 0..input_count {
-            read_witness(reader, &mut hasher)?;
+            read_witness(reader)?;
         }
     }
 
@@ -207,10 +207,7 @@ fn read_transaction<T: Read>(
         Utc,
     );
 
-    let first_hash = hasher.finalize();
-    let mut second_hasher = Sha256::new();
-    second_hasher.update(first_hash);
-    let hash = second_hasher.finalize().as_slice().try_into().expect("Hash of unexpected length");
+    let hash = sha256d::Hash::from_engine(hasher);
     
     Ok(BitcoinTransaction {
         inputs,

@@ -53,7 +53,7 @@ fn main() {
     ));
 
     for t in blocks.transaction_iter().take(10) {
-        println!("Hash: {:x?}\t Time: {:?}\t Coinbase: {:?}\t Input count: {:?}\t Output count: {:?}", t.hash, t.timestamp, t.is_coinbase, t.inputs.len(), t.outputs.len());
+        println!("Hash: {:?}\t Time: {:?}\t Coinbase: {:?}\t Input count: {:?}\t Output count: {:?}", t.hash, t.timestamp, t.is_coinbase, t.inputs.len(), t.outputs.len());
         // for o in t.outputs {
         //     println!("Script: {:?}", o.script.expect("Failed to parse script.").opcodes);
         // }

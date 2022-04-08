@@ -37,14 +37,17 @@ fn main_old() {
     /* for (key, val) in index_db.iter(read_options).filter(|(k, _)| k.key.first().map(|v| v == &0x74).unwrap_or(false)).take(100) {
         println!("Key: {:x?}\nVal: {:x?}\n", key.key, val);
     }*/
-    let mut out = std::collections::HashSet::new();
+    /*let mut out = std::collections::HashSet::new();
     let mut counter = 0;
     for (key, val) in index_db.iter(read_options).take(1000) {
         out.insert(key.key[0]);
         counter += 1;
     }
     println!("Counter: {:?}", counter);
-    println!("Set: {:?}, {:x?}", out, out);
+    println!("Set: {:?}, {:x?}", out, out);*/
+    let key = VecKey{key:vec![116, 0x47,0x06,0xb2,0x2e,0x2f,0x70,0xa9,0x46,0x69,0x27,0xba,0x75,0x0b,0xdd,0xb9,0x75,0x01,0x38,0x77,0xdc,0xd5,0xf7,0x23,0x4b,0x42,0xd0,0x3b,0x7b,0x8f,0xec,0x6a,0x92]};
+    let val = index_db.get(read_options, key);
+    println!("Val: {:?}", val);
 }
 
 fn main() {
@@ -52,14 +55,15 @@ fn main() {
         "/Users/christopher/Documents/bitcoin-core/blocks/",
     ));
 
-    for t in blocks.transaction_iter().take(10) {
-        println!("Hash: {:?}\t Time: {:?}\t Coinbase: {:?}\t Input count: {:?}\t Output count: {:?}", t.hash, t.timestamp, t.is_coinbase, t.inputs.len(), t.outputs.len());
+    let start = Instant::now();
+
+    for t in blocks.transaction_iter().take(10000) {
+        // println!("{:?}", t);
+        // println!("Hash: {:?}\t Time: {:?}\t Coinbase: {:?}\t Input count: {:?}\t Output count: {:?}", t.hash, t.timestamp, t.is_coinbase, t.inputs.len(), t.outputs.len());
         // for o in t.outputs {
         //     println!("Script: {:?}", o.script.expect("Failed to parse script.").opcodes);
         // }
     }
-
-    let start = Instant::now();
 
     let rates = exchange_rates::ExchangeRates::new();
 

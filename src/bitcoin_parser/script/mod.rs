@@ -4,6 +4,7 @@ use opcodes::OPCode;
 use std::io;
 use bitcoin_hashes::HashEngine;
 
+#[derive(Debug)]
 pub struct BitcoinScript {
     pub opcodes: Vec<OPCode>,
 }
@@ -84,6 +85,7 @@ impl BitcoinScript {
             };
 
             opcodes.push(next_token);
+            opcodes.shrink_to_fit();
         }
 
         Ok(Ok(BitcoinScript { opcodes }))

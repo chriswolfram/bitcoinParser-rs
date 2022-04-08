@@ -11,21 +11,24 @@ use bitcoin_hashes::{sha256d, HashEngine, Hash};
 use script::BitcoinScript;
 use basic_reading::*;
 
+#[derive(Debug)]
 pub struct BitcoinTransactionInput {
     pub prev_transaction: [u8; 32],
     pub prev_transaction_output: u32,
     pub script: Result<BitcoinScript, script::BitcoinScriptParseError>,
 }
 
+#[derive(Debug)]
 pub struct BitcoinTransactionOutput {
     pub value: u64,
     pub script: Result<BitcoinScript, script::BitcoinScriptParseError>,
 }
 
+#[derive(Debug)]
 pub struct BitcoinTransaction {
     pub inputs: Vec<BitcoinTransactionInput>,
     pub outputs: Vec<BitcoinTransactionOutput>,
-    pub lock_time: DateTime<Utc>,
+    pub lock_time: u32,
     pub timestamp: DateTime<Utc>,
     pub is_coinbase: bool,
     pub hash: sha256d::Hash
@@ -37,6 +40,7 @@ impl BitcoinTransaction {
     }
 }
 
+#[derive(Debug)]
 pub struct BitcoinBlock {
     pub version: u32,
     pub prev_hash: [u8; 32],
@@ -46,10 +50,12 @@ pub struct BitcoinBlock {
     pub transactions: Vec<BitcoinTransaction>,
 }
 
+#[derive(Debug)]
 pub struct BlockFileIterator<T: Read> {
     reader: T,
 }
 
+#[derive(Debug)]
 pub struct BlockCollection {
     pub base_dir: std::path::PathBuf,
 }
@@ -169,45 +175,77 @@ fn read_transaction<T: Read>(
 ) -> io::Result<BitcoinTransaction> {
     let mut hasher = sha256d::Hash::engine();
 
+    let hash_length0 = hasher.n_bytes_hashed();
     let _version = read_le_u32_hash(reader, &mut hasher)?;
+    let hash_length1 = hasher.n_bytes_hashed();
     let dummy = read_le_u8(reader)?;
+    let hash_length2 = hasher.n_bytes_hashed();
     let input_count;
     let flags;
-    let extended_format = dummy == 0x00;
+    let is_extended_format = dummy == 0x00;
 
-    if extended_format {
+    let mut running = false;
+
+    if is_extended_format {
         flags = read_le_u8(reader)?;
         input_count = read_varint_hash(reader, &mut hasher)?;
     } else {
         flags = 0;
+        running = true;
         hasher.input(&[dummy]);
         input_count = read_varint_with_prefix_hash(dummy, reader, &mut hasher)?;
     }
+    let hash_length3 = hasher.n_bytes_hashed();
 
     let mut inputs = Vec::with_capacity(input_count as usize);
     for _ in 0..input_count {
         inputs.push(read_transaction_input(reader, &mut hasher)?);
     }
+    let hash_length4 = hasher.n_bytes_hashed();
 
     let output_count = read_varint_hash(reader, &mut hasher)?;
+    let hash_length5 = hasher.n_bytes_hashed();
 
     let mut outputs = Vec::with_capacity(output_count as usize);
     for _ in 0..output_count {
         outputs.push(read_transaction_output(reader, &mut hasher)?);
     }
+    let hash_length6 = hasher.n_bytes_hashed();
 
-    if extended_format && flags == 0x01 {
+    if is_extended_format && flags == 0x01 {
         for _ in 0..input_count {
             read_witness(reader)?;
         }
     }
+    let hash_length7 = hasher.n_bytes_hashed();
 
-    let lock_time = DateTime::from_utc(
-        NaiveDateTime::from_timestamp(read_le_u32_hash(reader, &mut hasher)? as i64, 0),
-        Utc,
-    );
+    let lock_time = read_le_u32_hash(reader, &mut hasher)?;
+    let hash_length8 = hasher.n_bytes_hashed();
 
+    // TODO TEMP
+    let hash_length = hasher.n_bytes_hashed();
     let hash = sha256d::Hash::from_engine(hasher);
+    if hash.to_string() == "f161b4a922f2301c184f3dbf53d16d6c81f9c65f54cd6f9c8623a42d36924bbd" /*"2cba6c75c92066f9141ef6198e1d723bad48545218dfb0ac204c7006a870e345"*/ {
+        
+        println!("Hash body size 1: {:?}", hash_length0);
+        println!("Hash body size 2: {:?}", hash_length1);
+        println!("Hash body size 3: {:?}", hash_length2);
+        println!("Hash body size 4: {:?}", hash_length3);
+        println!("Hash body size 5: {:?}", hash_length4);
+        println!("Hash body size 6: {:?}", hash_length5);
+        println!("Hash body size 7: {:?}", hash_length6);
+        println!("Hash body size 8: {:?}", hash_length7);
+        println!("Hash body size 9: {:?}", hash_length8);
+        println!("Running: {:?}", running);
+        println!("Dummy: {:?}", dummy);
+
+        println!("Hash body size: {:?}", hash_length);
+        println!("Extended format: {:?}", &is_extended_format);
+        println!("Hash: {:?}", &hash);
+        println!("Inputs: {:?}", &inputs.len());
+        println!("Outputs: {:?}", &outputs);
+        println!("Lock time: {:?}", &lock_time);
+    }
     
     Ok(BitcoinTransaction {
         inputs,

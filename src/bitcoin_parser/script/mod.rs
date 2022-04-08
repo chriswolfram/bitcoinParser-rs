@@ -1,34 +1,28 @@
 mod opcodes;
 use crate::bitcoin_parser::basic_reading::*;
 use opcodes::OPCode;
-use std::io;
 use sha2::Digest;
+use std::io;
 
 #[derive(Debug)]
-pub struct BitcoinScript {
-    pub opcodes: Vec<OPCode>,
+pub enum BitcoinScript {
+    OPCodes(Option<Vec<OPCode>>),
+    Bytes(Vec<u8>),
 }
 
-#[derive(Debug)]
-pub enum BitcoinScriptParseError {
-    TooLong,
-}
-
-fn read_buffer<T: std::io::Read, H: Digest>(
+fn read_buffer<T: std::io::Read>(
     reader: &mut T,
     data_size: u64,
     length_remaining: &mut u64,
-    hasher: &mut H
-) -> io::Result<Result<Vec<u8>, BitcoinScriptParseError>> {
+) -> io::Result<Option<Vec<u8>>> {
     if *length_remaining < data_size {
-        return Ok(Err(BitcoinScriptParseError::TooLong));
+        return Ok(None);
     } else {
         let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(data_size as usize).collect();
         reader.read_exact(&mut buffer)?;
-        hasher.update(&buffer);
         *length_remaining -= data_size;
 
-        Ok(Ok(buffer))
+        Ok(Some(buffer))
     }
 }
 
@@ -36,58 +30,84 @@ impl BitcoinScript {
     pub fn new<T: std::io::Read, H: Digest>(
         reader: &mut T,
         length: u64,
-        hasher: &mut H
-    ) -> io::Result<Result<BitcoinScript, BitcoinScriptParseError>> {
-        let mut opcodes = Vec::new();
-        let mut length_remaining = length;
+        hasher: &mut H,
+    ) -> io::Result<BitcoinScript> {
+        let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(length as usize).collect();
+        reader.read_exact(&mut buffer)?;
+        hasher.update(&buffer);
 
-        while length_remaining > 0 {
-            let byte = read_le_u8_hash(reader, hasher)?;
-            length_remaining -= 1;
-
-            let next_token = match byte {
-                1..=75 => {
-                    let data_size = byte as u64;
-                    let buffer = read_buffer(reader, data_size, &mut length_remaining, hasher)?;
-                    match buffer {
-                        Ok(v) => OPCode::Data(v),
-                        Err(e) => return Ok(Err(e)),
-                    }
-                }
-                76 => {
-                    let data_size = read_le_u8_hash(reader, hasher)? as u64;
-                    length_remaining -= 1;
-                    let buffer = read_buffer(reader, data_size, &mut length_remaining, hasher)?;
-                    match buffer {
-                        Ok(v) => OPCode::Data(v),
-                        Err(e) => return Ok(Err(e)),
-                    }
-                }
-                77 => {
-                    let data_size = read_le_u16_hash(reader, hasher)? as u64;
-                    length_remaining -= 2;
-                    let buffer = read_buffer(reader, data_size, &mut length_remaining, hasher)?;
-                    match buffer {
-                        Ok(v) => OPCode::Data(v),
-                        Err(e) => return Ok(Err(e)),
-                    }
-                }
-                78 => {
-                    let data_size = read_le_u32_hash(reader, hasher)? as u64;
-                    length_remaining -= 4;
-                    let buffer = read_buffer(reader, data_size, &mut length_remaining, hasher)?;
-                    match buffer {
-                        Ok(v) => OPCode::Data(v),
-                        Err(e) => return Ok(Err(e)),
-                    }
-                }
-                _ => opcodes::byte_to_opcode(byte),
-            };
-
-            opcodes.push(next_token);
-            opcodes.shrink_to_fit();
-        }
-
-        Ok(Ok(BitcoinScript { opcodes }))
+        Ok(BitcoinScript::Bytes(buffer))
     }
+
+    pub fn opcodes_no_cache(self: &BitcoinScript) -> Option<Vec<OPCode>> {
+        match self {
+            BitcoinScript::OPCodes(opcodes) => opcodes.as_ref().cloned(),
+            BitcoinScript::Bytes(bytes) => bytes_to_opcodes(bytes)
+        }
+    }
+
+    pub fn opcodes(self: &mut BitcoinScript) -> Option<&Vec<OPCode>> {
+        match self {
+            BitcoinScript::OPCodes(opcodes) => opcodes.as_ref(),
+            BitcoinScript::Bytes(bytes) => {
+                let opcodes = bytes_to_opcodes(bytes);
+                *self = BitcoinScript::OPCodes(opcodes);
+                self.opcodes()
+            }
+        }
+    }
+}
+
+fn bytes_to_opcodes(bytes: &Vec<u8>) -> Option<Vec<OPCode>> {
+    let mut opcodes = Vec::new();
+    let mut length_remaining = bytes.len() as u64;
+    let mut reader = bytes.as_slice();
+
+    while length_remaining > 0 {
+        let byte = read_le_u8(&mut reader).expect("Failed to read Script bytes.");
+        length_remaining -= 1;
+
+        let next_token = match byte {
+            1..=75 => {
+                let data_size = byte as u64;
+                OPCode::Data(
+                    read_buffer(&mut reader, data_size, &mut length_remaining)
+                        .expect("Failed to read Script bytes.")?,
+                )
+            }
+            76 => {
+                let data_size =
+                    read_le_u8(&mut reader).expect("Failed to read Script bytes.") as u64;
+                length_remaining -= 1;
+                OPCode::Data(
+                    read_buffer(&mut reader, data_size, &mut length_remaining)
+                        .expect("Failed to read Script bytes.")?,
+                )
+            }
+            77 => {
+                let data_size =
+                    read_le_u16(&mut reader).expect("Failed to read Script bytes.") as u64;
+                length_remaining -= 2;
+                OPCode::Data(
+                    read_buffer(&mut reader, data_size, &mut length_remaining)
+                        .expect("Failed to read Script bytes.")?,
+                )
+            }
+            78 => {
+                let data_size =
+                    read_le_u32(&mut reader).expect("Failed to read Script bytes.") as u64;
+                length_remaining -= 4;
+                OPCode::Data(
+                    read_buffer(&mut reader, data_size, &mut length_remaining)
+                        .expect("Failed to read Script bytes.")?,
+                )
+            }
+            _ => opcodes::byte_to_opcode(byte),
+        };
+
+        opcodes.push(next_token);
+    }
+
+    opcodes.shrink_to_fit();
+    Some(opcodes)
 }

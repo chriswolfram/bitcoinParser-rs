@@ -15,13 +15,13 @@ use std::path::PathBuf;
 pub struct BitcoinTransactionInput {
     pub prev_transaction: [u8; 32],
     pub prev_transaction_output: u32,
-    pub script: Result<BitcoinScript, script::BitcoinScriptParseError>,
+    pub script: BitcoinScript,
 }
 
 #[derive(Debug)]
 pub struct BitcoinTransactionOutput {
     pub value: u64,
-    pub script: Result<BitcoinScript, script::BitcoinScriptParseError>,
+    pub script: BitcoinScript,
 }
 
 #[derive(Debug)]
@@ -31,7 +31,7 @@ pub struct BitcoinTransaction {
     pub lock_time: u32,
     pub timestamp: DateTime<Utc>,
     pub is_coinbase: bool,
-    pub hash: [u8; 32],
+    pub txid: [u8; 32],
 }
 
 #[derive(Debug)]
@@ -137,7 +137,7 @@ impl BitcoinTransaction {
             lock_time,
             timestamp,
             is_coinbase,
-            hash,
+            txid: hash,
         })
     }
 

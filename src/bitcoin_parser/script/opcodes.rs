@@ -2,7 +2,7 @@
 
 // From https://en.bitcoin.it/wiki/Script
 // and https://github.com/bitcoin/bitcoin/blob/master/src/script/script.h
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum OPCode {
     Data(Vec<u8>),
 

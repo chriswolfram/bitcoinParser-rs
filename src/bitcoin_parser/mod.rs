@@ -7,7 +7,7 @@ use std::fs;
 use std::io;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
-use bitcoin_hashes::{sha256d, HashEngine, Hash};
+use sha2::{Sha256, Digest};
 use script::BitcoinScript;
 use basic_reading::*;
 
@@ -31,7 +31,7 @@ pub struct BitcoinTransaction {
     pub lock_time: u32,
     pub timestamp: DateTime<Utc>,
     pub is_coinbase: bool,
-    pub hash: sha256d::Hash
+    pub hash: [u8; 32]
 }
 
 impl BitcoinTransaction {
@@ -123,10 +123,10 @@ impl BlockCollection {
     }
 }
 
-fn read_transaction_input<T: Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionInput> {
+fn read_transaction_input<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionInput> {
     let mut prev_transaction = [0u8; 32];
     reader.read_exact(&mut prev_transaction)?;
-    hasher.input(&prev_transaction);
+    hasher.update(&prev_transaction);
 
     let prev_transaction_output = read_le_u32_hash(reader, hasher)?;
     let script_size = read_varint_hash(reader, hasher)?;
@@ -134,6 +134,7 @@ fn read_transaction_input<T: Read, H: HashEngine>(reader: &mut T, hasher: &mut H
     let script = BitcoinScript::new(reader, script_size, hasher)?;
 
     let _sequence = read_le_u32_hash(reader, hasher)?;
+    println!("script_size: {:x?}", script_size);
 
     Ok(BitcoinTransactionInput {
         prev_transaction,
@@ -142,7 +143,7 @@ fn read_transaction_input<T: Read, H: HashEngine>(reader: &mut T, hasher: &mut H
     })
 }
 
-fn read_transaction_output<T: Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionOutput> {
+fn read_transaction_output<T: Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<BitcoinTransactionOutput> {
     let value = read_le_u64_hash(reader, hasher)?;
     let script_size = read_varint_hash(reader, hasher)?;
 
@@ -173,13 +174,13 @@ fn read_transaction<T: Read>(
     timestamp: DateTime<Utc>,
     is_coinbase: bool
 ) -> io::Result<BitcoinTransaction> {
-    let mut hasher = sha256d::Hash::engine();
+    let mut hasher = Sha256::new();
 
-    let hash_length0 = hasher.n_bytes_hashed();
+    //let hash_length1 = hasher.n_bytes_hashed();
     let _version = read_le_u32_hash(reader, &mut hasher)?;
-    let hash_length1 = hasher.n_bytes_hashed();
+    //let hash_length2 = hasher.n_bytes_hashed();
     let dummy = read_le_u8(reader)?;
-    let hash_length2 = hasher.n_bytes_hashed();
+    //let hash_length3 = hasher.n_bytes_hashed();
     let input_count;
     let flags;
     let is_extended_format = dummy == 0x00;
@@ -192,58 +193,63 @@ fn read_transaction<T: Read>(
     } else {
         flags = 0;
         running = true;
-        hasher.input(&[dummy]);
+        hasher.update([dummy]);
         input_count = read_varint_with_prefix_hash(dummy, reader, &mut hasher)?;
     }
-    let hash_length3 = hasher.n_bytes_hashed();
+    //let hash_length4 = hasher.n_bytes_hashed();
 
     let mut inputs = Vec::with_capacity(input_count as usize);
     for _ in 0..input_count {
         inputs.push(read_transaction_input(reader, &mut hasher)?);
     }
-    let hash_length4 = hasher.n_bytes_hashed();
+    //let hash_length5 = hasher.n_bytes_hashed();
 
     let output_count = read_varint_hash(reader, &mut hasher)?;
-    let hash_length5 = hasher.n_bytes_hashed();
+    //let hash_length6 = hasher.n_bytes_hashed();
 
     let mut outputs = Vec::with_capacity(output_count as usize);
     for _ in 0..output_count {
         outputs.push(read_transaction_output(reader, &mut hasher)?);
     }
-    let hash_length6 = hasher.n_bytes_hashed();
+    //let hash_length7 = hasher.n_bytes_hashed();
 
     if is_extended_format && flags == 0x01 {
         for _ in 0..input_count {
             read_witness(reader)?;
         }
     }
-    let hash_length7 = hasher.n_bytes_hashed();
+    //let hash_length8 = hasher.n_bytes_hashed();
 
     let lock_time = read_le_u32_hash(reader, &mut hasher)?;
-    let hash_length8 = hasher.n_bytes_hashed();
+    //let hash_length9 = hasher.n_bytes_hashed();
 
     // TODO TEMP
-    let hash_length = hasher.n_bytes_hashed();
-    let hash = sha256d::Hash::from_engine(hasher);
-    if hash.to_string() == "f161b4a922f2301c184f3dbf53d16d6c81f9c65f54cd6f9c8623a42d36924bbd" /*"2cba6c75c92066f9141ef6198e1d723bad48545218dfb0ac204c7006a870e345"*/ {
+    //let hash_length = hasher.n_bytes_hashed();
+    let hash1 = <[u8; 32]>::from(hasher.finalize());
+    let mut hasher2 = Sha256::new();
+    hasher2.update(hash1);
+    let mut hash = <[u8; 32]>::from(hasher2.finalize());
+    hash.reverse();
+    // println!("{:x?}", &hash);
+    if hash == [0xf1,0x61,0xb4,0xa9,0x22,0xf2,0x30,0x1c,0x18,0x4f,0x3d,0xbf,0x53,0xd1,0x6d,0x6c,0x81,0xf9,0xc6,0x5f,0x54,0xcd,0x6f,0x9c,0x86,0x23,0xa4,0x2d,0x36,0x92,0x4b,0xbd]/*"f161b4a922f2301c184f3dbf53d16d6c81f9c65f54cd6f9c8623a42d36924bbd"*/ /*"2cba6c75c92066f9141ef6198e1d723bad48545218dfb0ac204c7006a870e345"*/ {
         
-        println!("Hash body size 1: {:?}", hash_length0);
-        println!("Hash body size 2: {:?}", hash_length1);
-        println!("Hash body size 3: {:?}", hash_length2);
-        println!("Hash body size 4: {:?}", hash_length3);
-        println!("Hash body size 5: {:?}", hash_length4);
-        println!("Hash body size 6: {:?}", hash_length5);
-        println!("Hash body size 7: {:?}", hash_length6);
-        println!("Hash body size 8: {:?}", hash_length7);
-        println!("Hash body size 9: {:?}", hash_length8);
+        // println!("Hash body size 1: {:?}", hash_length1);
+        // println!("Hash body size 2: {:?}", hash_length2);
+        // println!("Hash body size 3: {:?}", hash_length3);
+        // println!("Hash body size 4: {:?}", hash_length4);
+        // println!("Hash body size 5: {:?}", hash_length5);
+        // println!("Hash body size 6: {:?}", hash_length6);
+        // println!("Hash body size 7: {:?}", hash_length7);
+        // println!("Hash body size 8: {:?}", hash_length8);
+        // println!("Hash body size 9: {:?}", hash_length9);
         println!("Running: {:?}", running);
         println!("Dummy: {:?}", dummy);
 
-        println!("Hash body size: {:?}", hash_length);
+        // println!("Hash body size: {:?}", hash_length);
         println!("Extended format: {:?}", &is_extended_format);
-        println!("Hash: {:?}", &hash);
-        println!("Inputs: {:?}", &inputs.len());
-        println!("Outputs: {:?}", &outputs);
+        println!("Hash: {:x?}", &hash);
+        println!("Inputs: {:x?}", &inputs);
+        println!("Outputs: {:x?}", &outputs);
         println!("Lock time: {:?}", &lock_time);
     }
     

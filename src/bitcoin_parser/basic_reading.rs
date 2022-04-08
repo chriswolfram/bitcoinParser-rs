@@ -1,5 +1,5 @@
 use std::io;
-use bitcoin_hashes::HashEngine;
+use sha2::Digest;
 
 pub fn read_le_u8<T: io::Read>(reader: &mut T) -> io::Result<u8> {
     let mut buffer = [0u8; 1];
@@ -40,40 +40,40 @@ pub fn read_varint_with_prefix<T: io::Read>(prefix: u8, reader: &mut T) -> io::R
 }
 
 // Hashing versions
-pub fn read_le_u8_hash<T: io::Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<u8> {
+pub fn read_le_u8_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<u8> {
     let mut buffer = [0u8; 1];
     reader.read_exact(&mut buffer)?;
-    hasher.input(&buffer);
+    hasher.update(&buffer);
     Ok(u8::from_le_bytes(buffer))
 }
 
-pub fn read_le_u16_hash<T: io::Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<u16> {
+pub fn read_le_u16_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<u16> {
     let mut buffer = [0u8; 2];
     reader.read_exact(&mut buffer)?;
-    hasher.input(&buffer);
+    hasher.update(&buffer);
     Ok(u16::from_le_bytes(buffer))
 }
 
-pub fn read_le_u32_hash<T: io::Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<u32> {
+pub fn read_le_u32_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<u32> {
     let mut buffer = [0u8; 4];
     reader.read_exact(&mut buffer)?;
-    hasher.input(&buffer);
+    hasher.update(&buffer);
     Ok(u32::from_le_bytes(buffer))
 }
 
-pub fn read_le_u64_hash<T: io::Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<u64> {
+pub fn read_le_u64_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<u64> {
     let mut buffer = [0u8; 8];
     reader.read_exact(&mut buffer)?;
-    hasher.input(&buffer);
+    hasher.update(&buffer);
     Ok(u64::from_le_bytes(buffer))
 }
 
-pub fn read_varint_hash<T: io::Read, H: HashEngine>(reader: &mut T, hasher: &mut H) -> io::Result<u64> {
+pub fn read_varint_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<u64> {
     let prefix = read_le_u8_hash(reader, hasher)?;
     read_varint_with_prefix(prefix, reader)
 }
 
-pub fn read_varint_with_prefix_hash<T: io::Read, H: HashEngine>(prefix: u8, reader: &mut T, hasher: &mut H) -> io::Result<u64> {
+pub fn read_varint_with_prefix_hash<T: io::Read, H: Digest>(prefix: u8, reader: &mut T, hasher: &mut H) -> io::Result<u64> {
     match prefix {
         0xff => read_le_u64_hash(reader, hasher),
         0xfe => Ok(read_le_u32_hash(reader, hasher)?.into()),

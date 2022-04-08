@@ -2,7 +2,7 @@ mod opcodes;
 use crate::bitcoin_parser::basic_reading::*;
 use opcodes::OPCode;
 use std::io;
-use bitcoin_hashes::HashEngine;
+use sha2::Digest;
 
 #[derive(Debug)]
 pub struct BitcoinScript {
@@ -14,7 +14,7 @@ pub enum BitcoinScriptParseError {
     TooLong,
 }
 
-fn read_buffer<T: std::io::Read, H: HashEngine>(
+fn read_buffer<T: std::io::Read, H: Digest>(
     reader: &mut T,
     data_size: u64,
     length_remaining: &mut u64,
@@ -25,7 +25,7 @@ fn read_buffer<T: std::io::Read, H: HashEngine>(
     } else {
         let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(data_size as usize).collect();
         reader.read_exact(&mut buffer)?;
-        hasher.input(&buffer);
+        hasher.update(&buffer);
         *length_remaining -= data_size;
 
         Ok(Ok(buffer))
@@ -33,7 +33,7 @@ fn read_buffer<T: std::io::Read, H: HashEngine>(
 }
 
 impl BitcoinScript {
-    pub fn new<T: std::io::Read, H: HashEngine>(
+    pub fn new<T: std::io::Read, H: Digest>(
         reader: &mut T,
         length: u64,
         hasher: &mut H

@@ -70,7 +70,7 @@ pub fn read_le_u64_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) 
 
 pub fn read_varint_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) -> io::Result<u64> {
     let prefix = read_le_u8_hash(reader, hasher)?;
-    read_varint_with_prefix(prefix, reader)
+    read_varint_with_prefix_hash(prefix, reader, hasher)
 }
 
 pub fn read_varint_with_prefix_hash<T: io::Read, H: Digest>(prefix: u8, reader: &mut T, hasher: &mut H) -> io::Result<u64> {

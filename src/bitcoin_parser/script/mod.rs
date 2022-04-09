@@ -10,22 +10,6 @@ pub enum BitcoinScript {
     Bytes(Vec<u8>),
 }
 
-fn read_buffer<T: std::io::Read>(
-    reader: &mut T,
-    data_size: u64,
-    length_remaining: &mut u64,
-) -> io::Result<Option<Vec<u8>>> {
-    if *length_remaining < data_size {
-        return Ok(None);
-    } else {
-        let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(data_size as usize).collect();
-        reader.read_exact(&mut buffer)?;
-        *length_remaining -= data_size;
-
-        Ok(Some(buffer))
-    }
-}
-
 impl BitcoinScript {
     pub fn new<T: std::io::Read, H: Digest>(
         reader: &mut T,
@@ -57,6 +41,23 @@ impl BitcoinScript {
         }
     }
 }
+
+fn read_buffer<T: std::io::Read>(
+    reader: &mut T,
+    data_size: u64,
+    length_remaining: &mut u64,
+) -> io::Result<Option<Vec<u8>>> {
+    if *length_remaining < data_size {
+        return Ok(None);
+    } else {
+        let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(data_size as usize).collect();
+        reader.read_exact(&mut buffer)?;
+        *length_remaining -= data_size;
+
+        Ok(Some(buffer))
+    }
+}
+
 
 fn bytes_to_opcodes(bytes: &Vec<u8>) -> Option<Vec<OPCode>> {
     let mut opcodes = Vec::new();

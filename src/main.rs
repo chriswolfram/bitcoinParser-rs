@@ -58,12 +58,12 @@ fn main() {
     let start = Instant::now();
 
     for mut t in blocks.transaction_iter().take(10000) {
-        for i in t.inputs.iter_mut() {
-            i.script.opcodes();
-        }
-        for o in t.outputs.iter_mut() {
-            o.script.opcodes();
-        }
+        // for i in t.inputs.iter_mut() {
+        //     i.script.opcodes();
+        // }
+        // for o in t.outputs.iter_mut() {
+        //     o.script.opcodes();
+        // }
         println!("{:x?}", t);
         // println!("Hash: {:?}\t Time: {:?}\t Coinbase: {:?}\t Input count: {:?}\t Output count: {:?}", t.hash, t.timestamp, t.is_coinbase, t.inputs.len(), t.outputs.len());
         // for o in t.outputs {

@@ -15,13 +15,13 @@ use std::path::PathBuf;
 pub struct BitcoinTransactionInput {
     pub prev_transaction: [u8; 32],
     pub prev_transaction_output: u32,
-    pub script: BitcoinScript,
+    pub script: Vec<u8>//BitcoinScript,
 }
 
 #[derive(Debug)]
 pub struct BitcoinTransactionOutput {
     pub value: u64,
-    pub script: BitcoinScript,
+    pub script: Vec<u8>//BitcoinScript,
 }
 
 #[derive(Debug)]
@@ -56,7 +56,9 @@ impl BitcoinTransactionInput {
         let prev_transaction_output = read_le_u32_hash(reader, hasher)?;
         let script_size = read_varint_hash(reader, hasher)?;
 
-        let script = BitcoinScript::new(reader, script_size, hasher)?;
+        let mut script: Vec<u8> = std::iter::repeat(0u8).take(script_size as usize).collect();
+        reader.read_exact(&mut script)?;
+        hasher.update(&script);
 
         let _sequence = read_le_u32_hash(reader, hasher)?;
 
@@ -76,7 +78,9 @@ impl BitcoinTransactionOutput {
         let value = read_le_u64_hash(reader, hasher)?;
         let script_size = read_varint_hash(reader, hasher)?;
 
-        let script = BitcoinScript::new(reader, script_size, hasher)?;
+        let mut script: Vec<u8> = std::iter::repeat(0u8).take(script_size as usize).collect();
+        reader.read_exact(&mut script)?;
+        hasher.update(&script);
 
         Ok(BitcoinTransactionOutput { value, script })
     }

@@ -15,19 +15,20 @@ use std::path::PathBuf;
 pub struct BitcoinTransactionInput {
     pub prev_transaction: [u8; 32],
     pub prev_transaction_output: u32,
-    pub script: Vec<u8>//BitcoinScript,
+    pub script: BitcoinScript,
 }
 
 #[derive(Debug)]
 pub struct BitcoinTransactionOutput {
     pub value: u64,
-    pub script: Vec<u8>//BitcoinScript,
+    pub script: BitcoinScript,
 }
 
 #[derive(Debug)]
 pub struct BitcoinTransaction {
     pub inputs: Vec<BitcoinTransactionInput>,
     pub outputs: Vec<BitcoinTransactionOutput>,
+    pub witnesses: Option<Vec<Vec<BitcoinScript>>>,
     pub lock_time: u32,
     pub timestamp: DateTime<Utc>,
     pub is_coinbase: bool,
@@ -56,9 +57,7 @@ impl BitcoinTransactionInput {
         let prev_transaction_output = read_le_u32_hash(reader, hasher)?;
         let script_size = read_varint_hash(reader, hasher)?;
 
-        let mut script: Vec<u8> = std::iter::repeat(0u8).take(script_size as usize).collect();
-        reader.read_exact(&mut script)?;
-        hasher.update(&script);
+        let script = BitcoinScript::new_with_hasher(reader, script_size, hasher)?;
 
         let _sequence = read_le_u32_hash(reader, hasher)?;
 
@@ -78,9 +77,7 @@ impl BitcoinTransactionOutput {
         let value = read_le_u64_hash(reader, hasher)?;
         let script_size = read_varint_hash(reader, hasher)?;
 
-        let mut script: Vec<u8> = std::iter::repeat(0u8).take(script_size as usize).collect();
-        reader.read_exact(&mut script)?;
-        hasher.update(&script);
+        let script = BitcoinScript::new_with_hasher(reader, script_size, hasher)?;
 
         Ok(BitcoinTransactionOutput { value, script })
     }
@@ -121,9 +118,23 @@ impl BitcoinTransaction {
             outputs.push(BitcoinTransactionOutput::new(reader, &mut hasher)?);
         }
 
+        // Based on https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki
+        // and https://bitcoincore.org/en/segwit_wallet_dev/
+        // and https://github.com/bitcoin/bitcoin/blob/master/src/primitives/transaction.h
+        let mut witnesses = None;
         if is_extended_format && flags == 0x01 {
+            witnesses = Some(Vec::with_capacity(inputs.len()));
             for _ in 0..input_count {
-                read_witness(reader)?;
+                let input_witness_count = read_varint(reader)?;
+                let mut input_witnesses = Vec::with_capacity(input_witness_count as usize);
+                for _ in 0..input_witness_count {
+                    let witness_length = read_varint(reader)?;
+                    let witness = BitcoinScript::new(reader, witness_length)?;
+                    input_witnesses.push(witness);
+                }
+                if let Some(witnesses_vec) = &mut witnesses {
+                    witnesses_vec.push(input_witnesses);
+                }
             }
         }
 
@@ -141,6 +152,7 @@ impl BitcoinTransaction {
             lock_time,
             timestamp,
             is_coinbase,
+            witnesses,
             txid: hash,
         })
     }
@@ -266,20 +278,4 @@ impl BlockCollection {
     ) -> impl ParallelIterator<Item = BitcoinTransaction> {
         self.par_iter().flat_map(|b| b.transactions.into_par_iter())
     }
-}
-
-// Based on https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki
-// and https://bitcoincore.org/en/segwit_wallet_dev/
-// and https://github.com/bitcoin/bitcoin/blob/master/src/primitives/transaction.h
-fn read_witness<T: Read>(reader: &mut T) -> io::Result<()> {
-    let length = read_varint(reader)?;
-    if length != 0 {
-        for _ in 0..length {
-            let inner_length = read_varint(reader)?;
-            let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(inner_length as usize).collect();
-            reader.read_exact(&mut buffer)?;
-        }
-    }
-
-    Ok(())
 }

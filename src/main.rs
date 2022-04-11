@@ -57,7 +57,7 @@ fn main() {
 
     let start = Instant::now();
 
-    for mut t in blocks.transaction_iter().take(10000) {
+    for t in blocks.transaction_iter().take(10000) {
         // for i in t.inputs.iter_mut() {
         //     i.script.opcodes();
         // }

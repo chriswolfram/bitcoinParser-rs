@@ -11,7 +11,14 @@ pub enum BitcoinScript {
 }
 
 impl BitcoinScript {
-    pub fn new<T: std::io::Read, H: Digest>(
+    pub fn new<T: std::io::Read>(reader: &mut T, length: u64) -> io::Result<BitcoinScript> {
+        let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(length as usize).collect();
+        reader.read_exact(&mut buffer)?;
+
+        Ok(BitcoinScript::Bytes(buffer))
+    }
+
+    pub fn new_with_hasher<T: std::io::Read, H: Digest>(
         reader: &mut T,
         length: u64,
         hasher: &mut H,
@@ -26,7 +33,7 @@ impl BitcoinScript {
     pub fn opcodes_no_cache(self: &BitcoinScript) -> Option<Vec<OPCode>> {
         match self {
             BitcoinScript::OPCodes(opcodes) => opcodes.as_ref().cloned(),
-            BitcoinScript::Bytes(bytes) => bytes_to_opcodes(bytes)
+            BitcoinScript::Bytes(bytes) => bytes_to_opcodes(bytes),
         }
     }
 
@@ -57,7 +64,6 @@ fn read_buffer<T: std::io::Read>(
         Ok(Some(buffer))
     }
 }
-
 
 fn bytes_to_opcodes(bytes: &Vec<u8>) -> Option<Vec<OPCode>> {
     let mut opcodes = Vec::new();

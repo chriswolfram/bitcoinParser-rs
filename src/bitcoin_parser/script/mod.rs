@@ -62,7 +62,7 @@ fn read_buffer<T: std::io::Read>(
 fn bytes_to_opcodes(bytes: &Vec<u8>) -> Option<Vec<OPCode>> {
     let mut opcodes = Vec::new();
     let mut length_remaining = bytes.len() as u64;
-    let mut reader = bytes.as_slice();
+    let mut reader = io::Cursor::new(bytes);
 
     while length_remaining > 0 {
         let byte = read_le_u8(&mut reader).expect("Failed to read Script bytes.");

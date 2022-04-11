@@ -28,7 +28,7 @@ pub struct BitcoinTransactionOutput {
 pub struct BitcoinTransaction {
     pub inputs: Vec<BitcoinTransactionInput>,
     pub outputs: Vec<BitcoinTransactionOutput>,
-    pub witnesses: Option<Vec<Vec<BitcoinScript>>>,
+    pub witnesses: Option<Vec<Vec<Vec<u8>>>>,
     pub lock_time: u32,
     pub timestamp: DateTime<Utc>,
     pub is_coinbase: bool,
@@ -129,7 +129,8 @@ impl BitcoinTransaction {
                 let mut input_witnesses = Vec::with_capacity(input_witness_count as usize);
                 for _ in 0..input_witness_count {
                     let witness_length = read_varint(reader)?;
-                    let witness = BitcoinScript::new(reader, witness_length)?;
+                    let mut witness: Vec<u8> = std::iter::repeat(0u8).take(witness_length as usize).collect();
+                    reader.read_exact(&mut witness)?;
                     input_witnesses.push(witness);
                 }
                 if let Some(witnesses_vec) = &mut witnesses {

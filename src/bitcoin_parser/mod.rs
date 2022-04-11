@@ -129,7 +129,9 @@ impl BitcoinTransaction {
                 let mut input_witnesses = Vec::with_capacity(input_witness_count as usize);
                 for _ in 0..input_witness_count {
                     let witness_length = read_varint(reader)?;
-                    let mut witness: Vec<u8> = std::iter::repeat(0u8).take(witness_length as usize).collect();
+                    let mut witness: Vec<u8> = std::iter::repeat(0u8)
+                        .take(witness_length as usize)
+                        .collect();
                     reader.read_exact(&mut witness)?;
                     input_witnesses.push(witness);
                 }
@@ -144,8 +146,8 @@ impl BitcoinTransaction {
         let hash1 = <[u8; 32]>::from(hasher.finalize());
         let mut hasher2 = Sha256::new();
         hasher2.update(hash1);
-        let mut hash = <[u8; 32]>::from(hasher2.finalize());
-        hash.reverse();
+        let mut txid = <[u8; 32]>::from(hasher2.finalize());
+        txid.reverse();
 
         Ok(BitcoinTransaction {
             inputs,
@@ -154,7 +156,7 @@ impl BitcoinTransaction {
             timestamp,
             is_coinbase,
             witnesses,
-            txid: hash,
+            txid,
         })
     }
 

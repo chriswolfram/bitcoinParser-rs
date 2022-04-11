@@ -55,7 +55,10 @@ fn read_buffer<T: std::io::Read>(
     length_remaining: &mut u64,
 ) -> io::Result<Vec<u8>> {
     if *length_remaining < data_size {
-        return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "More bytes requested than remaining in Script."));
+        return Err(io::Error::new(
+            io::ErrorKind::UnexpectedEof,
+            "More bytes requested than remaining in Script.",
+        ));
     } else {
         let mut buffer: Vec<u8> = std::iter::repeat(0u8).take(data_size as usize).collect();
         reader.read_exact(&mut buffer)?;
@@ -77,33 +80,22 @@ fn bytes_to_opcodes(bytes: &Vec<u8>) -> io::Result<Vec<OPCode>> {
         let next_token = match byte {
             1..=75 => {
                 let data_size = byte as u64;
-                OPCode::Data(
-                    read_buffer(&mut reader, data_size, &mut length_remaining)?,
-                )
+                OPCode::Data(read_buffer(&mut reader, data_size, &mut length_remaining)?)
             }
             76 => {
-                let data_size =
-                    read_le_u8(&mut reader)? as u64;
+                let data_size = read_le_u8(&mut reader)? as u64;
                 length_remaining -= 1;
-                OPCode::Data(
-                    read_buffer(&mut reader, data_size, &mut length_remaining)?,
-                )
+                OPCode::Data(read_buffer(&mut reader, data_size, &mut length_remaining)?)
             }
             77 => {
-                let data_size =
-                    read_le_u16(&mut reader)? as u64;
+                let data_size = read_le_u16(&mut reader)? as u64;
                 length_remaining -= 2;
-                OPCode::Data(
-                    read_buffer(&mut reader, data_size, &mut length_remaining)?,
-                )
+                OPCode::Data(read_buffer(&mut reader, data_size, &mut length_remaining)?)
             }
             78 => {
-                let data_size =
-                    read_le_u32(&mut reader)? as u64;
+                let data_size = read_le_u32(&mut reader)? as u64;
                 length_remaining -= 4;
-                OPCode::Data(
-                    read_buffer(&mut reader, data_size, &mut length_remaining)?,
-                )
+                OPCode::Data(read_buffer(&mut reader, data_size, &mut length_remaining)?)
             }
             _ => opcodes::byte_to_opcode(byte),
         };

@@ -1,5 +1,5 @@
-use std::io;
 use sha2::Digest;
+use std::io;
 
 pub fn read_le_u8<T: io::Read>(reader: &mut T) -> io::Result<u8> {
     let mut buffer = [0u8; 1];
@@ -73,7 +73,11 @@ pub fn read_varint_hash<T: io::Read, H: Digest>(reader: &mut T, hasher: &mut H) 
     read_varint_with_prefix_hash(prefix, reader, hasher)
 }
 
-pub fn read_varint_with_prefix_hash<T: io::Read, H: Digest>(prefix: u8, reader: &mut T, hasher: &mut H) -> io::Result<u64> {
+pub fn read_varint_with_prefix_hash<T: io::Read, H: Digest>(
+    prefix: u8,
+    reader: &mut T,
+    hasher: &mut H,
+) -> io::Result<u64> {
     match prefix {
         0xff => read_le_u64_hash(reader, hasher),
         0xfe => Ok(read_le_u32_hash(reader, hasher)?.into()),

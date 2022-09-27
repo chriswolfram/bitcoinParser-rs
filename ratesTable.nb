@@ -1,0 +1,107 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      3164,         97]
+NotebookOptionsPosition[      2597,         79]
+NotebookOutlinePosition[      2992,         95]
+CellTagsIndexPosition[      2949,         92]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Exchange rates table", "Section",
+ CellChangeTimes->{{3.8594273887402077`*^9, 
+  3.859427393844366*^9}},ExpressionUUID->"60e461c6-269a-42e8-9b45-\
+9b18bff6f323"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"ts", "=", 
+   RowBox[{"TimeSeriesResample", "[", 
+    RowBox[{
+     RowBox[{"CurrencyConvert", "[", 
+      RowBox[{
+       RowBox[{"Quantity", "[", 
+        RowBox[{"1", ",", "\"\<Satoshis\>\""}], "]"}], ",", 
+       "\"\<USDollars\>\"", ",", "All"}], "]"}], ",", "\"\<Day\>\""}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.859427398463887*^9, 3.859427399464323*^9}, {
+  3.859427583788178*^9, 3.8594275978756323`*^9}},
+ CellLabel->
+  "In[225]:=",ExpressionUUID->"a73fd5e0-353d-4691-aeef-3a5e2d3d3a40"],
+
+Cell[BoxData[
+ RowBox[{"CopyToClipboard", "@", 
+  RowBox[{"StringRiffle", "[", 
+   RowBox[{
+    RowBox[{"MapThread", "[", 
+     RowBox[{
+      RowBox[{
+      "StringTemplate", "[", 
+       "\"\<exchange_rates.insert(chrono::Date::<Utc>::from_utc(chrono::\
+NaiveDate::from_ymd(``,``,``), Utc), ``);\>\"", "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"DateValue", "[", 
+         RowBox[{
+          RowBox[{"ts", "[", "\"\<Dates\>\"", "]"}], ",", "\"\<Year\>\""}], 
+         "]"}], ",", 
+        RowBox[{"DateValue", "[", 
+         RowBox[{
+          RowBox[{"ts", "[", "\"\<Dates\>\"", "]"}], ",", "\"\<Month\>\""}], 
+         "]"}], ",", 
+        RowBox[{"DateValue", "[", 
+         RowBox[{
+          RowBox[{"ts", "[", "\"\<Dates\>\"", "]"}], ",", "\"\<Day\>\""}], 
+         "]"}], ",", 
+        RowBox[{"QuantityMagnitude", "[", 
+         RowBox[{
+          RowBox[{"ts", "[", "\"\<Values\>\"", "]"}], ",", 
+          "\"\<USDollars\>\""}], "]"}]}], "}"}]}], "]"}], ",", 
+    "\"\<\\n\>\""}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.859427505973152*^9, 3.859427563956472*^9}, {
+  3.859427618766426*^9, 3.859427637004642*^9}, {3.859427702951151*^9, 
+  3.8594277091771927`*^9}},
+ CellLabel->
+  "In[306]:=",ExpressionUUID->"9cfeaa1b-ee92-444e-b20f-9369bb863d33"]
+}, Open  ]]
+},
+WindowSize->{808, 897},
+WindowMargins->{{4, Automatic}, {Automatic, 4}},
+FrontEndVersion->"13.2 for Mac OS X x86 (64-bit) (September 2, 2022)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"c4827c12-d5e4-4ef8-8b5b-7b5e8214f09c"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 167, 3, 67, "Section",ExpressionUUID->"60e461c6-269a-42e8-9b45-9b18bff6f323"],
+Cell[750, 27, 546, 14, 30, "Input",ExpressionUUID->"a73fd5e0-353d-4691-aeef-3a5e2d3d3a40"],
+Cell[1299, 43, 1282, 33, 178, "Input",ExpressionUUID->"9cfeaa1b-ee92-444e-b20f-9369bb863d33"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
